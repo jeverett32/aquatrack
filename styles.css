@@ -9,9 +9,9 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Hero Section Style */
 .hero {
-    /* You can change the background image by replacing 'hero-background.jpg' with your image file name. */
-    /* Ensure the image file is in the same folder as your index.html file. */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('hero-background.jpg');
+    /* The path below now points to an 'images' folder. */
+    /* Create an 'images' folder and place your background file inside it. */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/hero-background.jpg');
     background-size: cover;
     background-position: center;
 }
