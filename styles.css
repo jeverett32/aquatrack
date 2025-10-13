@@ -1,0 +1,33 @@
+/* Define custom fonts */
+body { 
+    font-family: 'Lato', sans-serif; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Hero Section Style */
+.hero {
+    /* You can change the background image by replacing 'hero-background.jpg' with your image file name. */
+    /* Ensure the image file is in the same folder as your index.html file. */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('hero-background.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Softer shadows for a gentler feel */
+.shadow-soft {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Map & Leaflet Styles */
+#map { 
+    border-radius: 0.5rem; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.leaflet-popup-content-wrapper { 
+    border-radius: 0.5rem; 
+}
+
