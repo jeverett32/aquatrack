@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaTrack - Well Development & Tracking</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- LeafletJS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* Custom styles for better aesthetics */
+        body { font-family: 'Inter', sans-serif; }
+        .page { display: none; }
+        .page.active { display: block; }
+        #map { height: 60vh; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .leaflet-popup-content-wrapper { border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="nav-link text-2xl font-bold text-blue-600" data-page="home">
+                <i class="fas fa-water"></i> AquaTrack
+            </a>
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="#" class="nav-link text-gray-600 hover:text-blue-600" data-page="home">Home</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-blue-600" data-page="map-page">Interactive Map</a>
+                <a href="#" id="dashboard-nav" class="nav-link text-gray-600 hover:text-blue-600 hidden" data-page="dashboard">Dashboard</a>
+            </div>
+            <div class="flex items-center space-x-2">
+                 <button id="add-project-btn" class="hidden bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    <i class="fas fa-plus"></i> New Project
+                </button>
+                <div id="auth-container">
+                    <button id="login-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition" data-page="login">Login</button>
+                </div>
+                 <div id="user-menu" class="hidden relative">
+                    <button id="user-menu-button" class="bg-gray-200 rounded-full h-10 w-10 flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" id="logout-btn">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-6">
+        <!-- Home / Landing Page -->
+        <section id="home" class="page active">
+            <div class="text-center bg-white p-12 rounded-lg shadow-lg">
+                <h1 class="text-5xl font-bold mb-4 text-blue-700">Connecting Communities to Clean Water</h1>
+                <p class="text-xl text-gray-600 mb-8">Explore our interactive map to discover communities in need and learn how you can help bring them a sustainable source of fresh water.</p>
+                <button class="nav-link bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-transform transform hover:scale-105" data-page="map-page">View the Map</button>
+            </div>
+            <div class="mt-12 grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <i class="fas fa-bullseye text-3xl text-blue-500 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Raise Awareness</h3>
+                    <p>Visually highlighting specific areas of need and educating users on the challenges faced by these communities.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <i class="fas fa-info-circle text-3xl text-blue-500 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Provide Information</h3>
+                    <p>Creating a transparent channel to inform and direct individuals on how to contribute to tangible projects.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <i class="fas fa-users text-3xl text-blue-500 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Empower Communities</h3>
+                    <p>Giving local partners a platform to advocate for their needs and track the progress of funded projects.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Map Page -->
+        <section id="map-page" class="page">
+            <h2 class="text-3xl font-bold mb-4 text-center">Global Well Projects</h2>
+            <p class="text-center text-gray-600 mb-6">Click on a marker to learn more about a specific project.</p>
+            <div id="map"></div>
+        </section>
+
+        <!-- Project Detail Page -->
+        <section id="project-detail" class="page">
+            <!-- Dynamic content will be injected here -->
+        </section>
+
+        <!-- Login Page -->
+        <section id="login" class="page">
+            <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold mb-6 text-center">Login</h2>
+                <form id="login-form">
+                    <div class="mb-4">
+                        <label for="login-email" class="block text-gray-700 font-bold mb-2">Email</label>
+                        <input type="email" id="login-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="login-password" class="block text-gray-700 font-bold mb-2">Password</label>
+                        <input type="password" id="login-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">Login</button>
+                </form>
+                <p class="text-center mt-4">
+                    Don't have an account? <a href="#" class="nav-link text-blue-500 hover:underline" data-page="register">Register here</a>
+                </p>
+            </div>
+        </section>
+
+        <!-- Registration Page -->
+        <section id="register" class="page">
+            <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold mb-6 text-center">Create an Account</h2>
+                <form id="register-form">
+                     <div class="mb-4">
+                        <label for="register-name" class="block text-gray-700 font-bold mb-2">Full Name</label>
+                        <input type="text" id="register-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="register-email" class="block text-gray-700 font-bold mb-2">Email</label>
+                        <input type="email" id="register-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="register-password" class="block text-gray-700 font-bold mb-2">Password</label>
+                        <input type="password" id="register-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required minlength="6">
+                    </div>
+                    <button type="submit" class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition">Register</button>
+                </form>
+                 <p class="text-center mt-4">
+                    Already have an account? <a href="#" class="nav-link text-blue-500 hover:underline" data-page="login">Login here</a>
+                </p>
+            </div>
+        </section>
+
+        <!-- User Dashboard Page -->
+        <section id="dashboard" class="page">
+            <h2 class="text-3xl font-bold mb-2">My Dashboard</h2>
+            <p class="text-gray-600 mb-6">Here are the projects you are currently tracking.</p>
+            <div id="saved-projects-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Saved projects will be dynamically inserted here -->
+                <p id="no-saved-projects" class="text-gray-500">You haven't saved any projects yet.</p>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Admin Modal for Adding/Editing Projects -->
+    <div id="project-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg">
+            <h2 id="modal-title" class="text-2xl font-bold mb-4">Add New Project</h2>
+            <form id="project-form">
+                <input type="hidden" id="project-id">
+                <div class="mb-4">
+                    <label for="project-title" class="block text-sm font-medium text-gray-700">Project Title</label>
+                    <input type="text" id="project-title" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="project-lat" class="block text-sm font-medium text-gray-700">Latitude</label>
+                        <input type="number" step="any" id="project-lat" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" required>
+                    </div>
+                    <div>
+                        <label for="project-lng" class="block text-sm font-medium text-gray-700">Longitude</label>
+                        <input type="number" step="any" id="project-lng" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="project-image" class="block text-sm font-medium text-gray-700">Image URL</label>
+                    <input type="url" id="project-image" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" required>
+                </div>
+                 <div class="mb-4">
+                    <label for="project-status" class="block text-sm font-medium text-gray-700">Status</label>
+                    <select id="project-status" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
+                        <option>Funding</option>
+                        <option>In Progress</option>
+                        <option>Complete</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="project-description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="project-description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="project-contribution" class="block text-sm font-medium text-gray-700">Contribution Info</label>
+                    <textarea id="project-contribution" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" required></textarea>
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancel-modal-btn" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400">Cancel</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Custom Alert/Message Box -->
+    <div id="message-box" class="hidden fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300">
+        <p id="message-text"></p>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // IMPORTANT: Replace with your own Firebase project configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Import Firebase services
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            getDocs, 
+            doc, 
+            getDoc,
+            addDoc,
+            setDoc,
+            deleteDoc,
+            query,
+            where,
+            onSnapshot,
+            updateDoc
+        } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // App State
+        let map;
+        let currentUser = null;
+        let isAdmin = false;
+        // IMPORTANT: For a real app, use Firebase custom claims to set admins.
+        // For this demo, we'll hardcode an admin UID. Replace with your own user's UID after you create it.
+        const ADMIN_UID = "REPLACE_WITH_YOUR_ADMIN_USER_ID";
+        let markers = [];
+
+        // --- UI & NAVIGATION ---
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === pageId);
+            });
+            window.scrollTo(0,0);
+            
+            // Fix: If we are showing the map page, ensure the map size is correct.
+            if (pageId === 'map-page' && map) {
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 10);
+            }
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.dataset.page;
+                if (pageId) {
+                    showPage(pageId);
+                    // Centralized logic for page-specific actions
+                    if (pageId === 'map-page') {
+                        initMap();
+                    }
+                    if (pageId === 'dashboard') {
+                        loadDashboard();
+                    }
+                }
+            });
+        });
+        
+        // --- CUSTOM MESSAGE BOX ---
+        const messageBox = document.getElementById('message-box');
+        const messageText = document.getElementById('message-text');
+
+        function showMessage(message, isError = false) {
+            messageText.textContent = message;
+            messageBox.classList.remove('hidden', 'bg-green-500', 'bg-red-500');
+            messageBox.classList.add(isError ? 'bg-red-500' : 'bg-green-500');
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 3000);
+        }
+
+        // --- MAP INITIALIZATION & FUNCTIONALITY ---
+        function initMap() {
+            if (document.getElementById('map')._leaflet_id) return; // Map already initialized
+            map = L.map('map').setView([10, 0], 2); // Centered globally
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            fetchAndDisplayWells();
+        }
+
+        async function fetchAndDisplayWells() {
+            // Clear existing markers
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+            
+            const wellsCol = collection(db, "well_projects");
+            onSnapshot(wellsCol, (querySnapshot) => {
+                 querySnapshot.forEach((doc) => {
+                    const well = doc.data();
+                    const marker = L.marker([well.lat, well.lng]).addTo(map);
+                    marker.bindPopup(`<b>${well.title}</b><br>${well.status}<br><a href="#" class="view-project-link" data-id="${doc.id}">View Details</a>`);
+                    markers.push(marker);
+                });
+            });
+        }
+        
+        // Event delegation for dynamically created links in popups
+        document.getElementById('map').addEventListener('click', (e) => {
+            if (e.target.classList.contains('view-project-link')) {
+                e.preventDefault();
+                const projectId = e.target.dataset.id;
+                showProjectDetail(projectId);
+            }
+        });
+
+        // --- PROJECT DETAIL PAGE ---
+        async function showProjectDetail(projectId) {
+            const projectDetailContainer = document.getElementById('project-detail');
+            const projectRef = doc(db, "well_projects", projectId);
+            const projectSnap = await getDoc(projectRef);
+
+            if (projectSnap.exists()) {
+                const project = projectSnap.data();
+                const projectId = projectSnap.id;
+                
+                let savedButtonHtml = '';
+                if(currentUser){
+                    const isSaved = await isProjectSaved(currentUser.uid, projectId);
+                    savedButtonHtml = `<button id="save-project-btn" data-id="${projectId}" class="${isSaved ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600'} text-white font-bold py-2 px-4 rounded transition">
+                                            <i class="fas fa-star"></i> ${isSaved ? 'Unsave Project' : 'Save Project'}
+                                        </button>`;
+                }
+
+                let adminButtonsHtml = '';
+                if (isAdmin) {
+                    adminButtonsHtml = `
+                        <button id="edit-project-detail-btn" data-id="${projectId}" class="bg-yellow-500 text-white font-bold py-2 px-4 rounded transition hover:bg-yellow-600">Edit</button>
+                        <button id="delete-project-detail-btn" data-id="${projectId}" class="bg-red-500 text-white font-bold py-2 px-4 rounded transition hover:bg-red-600">Delete</button>
+                    `;
+                }
+
+                projectDetailContainer.innerHTML = `
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <img src="${project.image}" alt="${project.title}" class="w-full h-96 object-cover rounded-lg mb-6">
+                        <div class="flex justify-between items-start">
+                             <h2 class="text-4xl font-bold mb-2">${project.title}</h2>
+                             <span class="text-sm font-semibold px-3 py-1 rounded-full ${project.status === 'Complete' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}">${project.status}</span>
+                        </div>
+                        <p class="text-gray-600 text-lg mb-6">${project.description}</p>
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="text-2xl font-bold mb-2">How to Contribute</h3>
+                            <p class="text-gray-700">${project.contribution}</p>
+                        </div>
+                        <div class="mt-6 flex items-center space-x-4">
+                            ${savedButtonHtml}
+                            ${adminButtonsHtml}
+                        </div>
+                    </div>`;
+                showPage('project-detail');
+            } else {
+                console.error("No such document!");
+                showMessage("Could not find the requested project.", true);
+                showPage('map-page');
+            }
+        }
+        
+        // --- AUTHENTICATION ---
+        onAuthStateChanged(auth, user => {
+            currentUser = user;
+            if (user) {
+                isAdmin = user.uid === ADMIN_UID;
+                updateUIForLoggedInUser(user);
+            } else {
+                isAdmin = false;
+                updateUIForLoggedOutUser();
+            }
+        });
+
+        function updateUIForLoggedInUser(user) {
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('dashboard-nav').classList.remove('hidden');
+            if (isAdmin) {
+                 document.getElementById('add-project-btn').classList.remove('hidden');
+            }
+        }
+        
+        function updateUIForLoggedOutUser() {
+            document.getElementById('auth-container').classList.remove('hidden');
+            document.getElementById('user-menu').classList.add('hidden');
+            document.getElementById('dashboard-nav').classList.add('hidden');
+            document.getElementById('add-project-btn').classList.add('hidden');
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                showPage('home'); // Redirect from dashboard if logged out
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                showMessage("Logged in successfully!");
+                showPage('home');
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        });
+        
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                showMessage("Registration successful!");
+                showPage('home');
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+             try {
+                await signOut(auth);
+                showMessage("Logged out successfully.");
+                showPage('home');
+            } catch (error) {
+                 showMessage(error.message, true);
+            }
+        });
+        
+        // User menu dropdown toggle
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenuDropdown = document.getElementById('user-menu-dropdown');
+        userMenuButton.addEventListener('click', () => {
+            userMenuDropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+            if (!userMenuButton.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+                userMenuDropdown.classList.add('hidden');
+            }
+        });
+
+        // --- USER DASHBOARD & SAVED PROJECTS ---
+        async function isProjectSaved(userId, projectId) {
+            const savedProjectRef = doc(db, "users", userId, "saved_projects", projectId);
+            const docSnap = await getDoc(savedProjectRef);
+            return docSnap.exists();
+        }
+        
+        async function toggleSaveProject(userId, projectId) {
+             const savedProjectRef = doc(db, "users", userId, "saved_projects", projectId);
+             const projectRef = doc(db, "well_projects", projectId);
+
+             if (await isProjectSaved(userId, projectId)) {
+                 await deleteDoc(savedProjectRef);
+                 showMessage("Project unsaved.");
+                 return false;
+             } else {
+                 const projectSnap = await getDoc(projectRef);
+                 if(projectSnap.exists()){
+                     // Save a reference to the project
+                     await setDoc(savedProjectRef, { projectId: projectId });
+                     showMessage("Project saved!");
+                     return true;
+                 }
+                 return false;
+             }
+        }
+        
+        async function loadDashboard() {
+            if (!currentUser) return;
+            const savedContainer = document.getElementById('saved-projects-container');
+            const noSavedProjectsMsg = document.getElementById('no-saved-projects');
+            
+            const savedProjectsCol = collection(db, "users", currentUser.uid, "saved_projects");
+            onSnapshot(savedProjectsCol, async (snapshot) => {
+                if (snapshot.empty) {
+                    savedContainer.innerHTML = '';
+                    noSavedProjectsMsg.classList.remove('hidden');
+                    savedContainer.appendChild(noSavedProjectsMsg);
+                    return;
+                }
+
+                noSavedProjectsMsg.classList.add('hidden');
+                savedContainer.innerHTML = ''; // Clear existing
+                for (const savedDoc of snapshot.docs) {
+                    const projectRef = doc(db, "well_projects", savedDoc.data().projectId);
+                    const projectSnap = await getDoc(projectRef);
+                    if (projectSnap.exists()) {
+                        const project = projectSnap.data();
+                        const card = document.createElement('div');
+                        card.className = "bg-white rounded-lg shadow-md overflow-hidden";
+                        card.innerHTML = `
+                             <img src="${project.image}" alt="${project.title}" class="w-full h-48 object-cover">
+                             <div class="p-4">
+                                 <h3 class="text-xl font-bold">${project.title}</h3>
+                                 <p class="text-sm text-gray-500 mb-2">${project.status}</p>
+                                 <p class="text-gray-700 text-sm mb-4">${project.description.substring(0, 100)}...</p>
+                                 <button class="view-project-link w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600" data-id="${projectSnap.id}">View Details</button>
+                             </div>
+                        `;
+                        savedContainer.appendChild(card);
+                    }
+                }
+            });
+        }
+        
+        // --- ADMIN FUNCTIONALITY ---
+        const projectModal = document.getElementById('project-modal');
+        const projectForm = document.getElementById('project-form');
+        const modalTitle = document.getElementById('modal-title');
+        
+        document.getElementById('add-project-btn').addEventListener('click', () => {
+            projectForm.reset();
+            document.getElementById('project-id').value = '';
+            modalTitle.textContent = "Add New Project";
+            projectModal.classList.remove('hidden');
+        });
+        
+        document.getElementById('cancel-modal-btn').addEventListener('click', () => {
+            projectModal.classList.add('hidden');
+        });
+
+        projectForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('project-id').value;
+            const projectData = {
+                title: document.getElementById('project-title').value,
+                lat: parseFloat(document.getElementById('project-lat').value),
+                lng: parseFloat(document.getElementById('project-lng').value),
+                image: document.getElementById('project-image').value,
+                status: document.getElementById('project-status').value,
+                description: document.getElementById('project-description').value,
+                contribution: document.getElementById('project-contribution').value,
+            };
+
+            try {
+                if (id) {
+                    // Update existing project
+                    const projectRef = doc(db, 'well_projects', id);
+                    await updateDoc(projectRef, projectData);
+                    showMessage("Project updated successfully!");
+                } else {
+                    // Add new project
+                    await addDoc(collection(db, 'well_projects'), projectData);
+                    showMessage("Project added successfully!");
+                }
+                projectModal.classList.add('hidden');
+                fetchAndDisplayWells(); // Refresh map
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        });
+        
+        async function openEditModal(projectId) {
+            const projectRef = doc(db, 'well_projects', projectId);
+            const projectSnap = await getDoc(projectRef);
+            if (projectSnap.exists()) {
+                const project = projectSnap.data();
+                document.getElementById('project-id').value = projectId;
+                document.getElementById('project-title').value = project.title;
+                document.getElementById('project-lat').value = project.lat;
+                document.getElementById('project-lng').value = project.lng;
+                document.getElementById('project-image').value = project.image;
+                document.getElementById('project-status').value = project.status;
+                document.getElementById('project-description').value = project.description;
+                document.getElementById('project-contribution').value = project.contribution;
+                
+                modalTitle.textContent = "Edit Project";
+                projectModal.classList.remove('hidden');
+            }
+        }
+        
+        async function deleteProject(projectId) {
+            if (confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+                 try {
+                     await deleteDoc(doc(db, "well_projects", projectId));
+                     showMessage("Project deleted successfully.");
+                     showPage('map-page');
+                     fetchAndDisplayWells();
+                 } catch (error) {
+                     showMessage(error.message, true);
+                 }
+            }
+        }
+
+        // --- GLOBAL EVENT LISTENERS ---
+        // Note: Navigation logic has been moved to the navLinks listener for clarity.
+        document.addEventListener('click', async (e) => {
+            // View project button on cards
+            if (e.target.matches('.view-project-link[data-id]')) {
+                e.preventDefault();
+                const projectId = e.target.dataset.id;
+                showProjectDetail(projectId);
+            }
+            // Save project button on detail page
+            if (e.target.matches('#save-project-btn')) {
+                e.preventDefault();
+                if(!currentUser){
+                    showMessage("Please log in to save projects.", true);
+                    return;
+                }
+                const projectId = e.target.dataset.id;
+                const isNowSaved = await toggleSaveProject(currentUser.uid, projectId);
+                e.target.textContent = isNowSaved ? ' Unsave Project' : ' Save Project';
+                e.target.classList.toggle('bg-green-500', !isNowSaved);
+                e.target.classList.toggle('hover:bg-green-600', !isNowSaved);
+                e.target.classList.toggle('bg-yellow-500', isNowSaved);
+                e.target.classList.toggle('hover:bg-yellow-600', isNowSaved);
+                // Prepend icon again
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-star';
+                e.target.prepend(icon);
+
+            }
+            // Admin buttons on detail page
+            if (e.target.matches('#edit-project-detail-btn')) {
+                openEditModal(e.target.dataset.id);
+            }
+            if (e.target.matches('#delete-project-detail-btn')) {
+                deleteProject(e.target.dataset.id);
+            }
+        });
+
+        // Initial Load
+        showPage('home');
+
+    </script>
+</body>
+</html>
+
