@@ -11,7 +11,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero {
     /* The path below now points to an 'images' folder. */
     /* Create an 'images' folder and place your background file inside it. */
-    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)), url('images/hero-background.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/hero-background.jpg');
     background-size: cover;
     background-position: center;
 }
