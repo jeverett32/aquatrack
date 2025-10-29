@@ -1,0 +1,10 @@
+A detailed ERD diagram showing five entities.
+1. "Users (Cognito)": "userId (PK)" [String], "email" [String], "name" [String].
+2. "Partners": "partnerId (PK)" [String], "name" [String], "description" [String], "website_url" [String].
+3. "well_projects": "id (PK)" [String], "partnerId (FK)" [String], "title" [String], "lat" [Number], "lng" [Number], "description" [String], "image" [String], "status" [String], "contribution" [String].
+4. "ProjectUpdates": "updateId (PK)" [String], "projectId (FK)" [String], "updateDate" [String], "updateText" [String].
+5. "saved_projects": "userId (PK, FK)" [String], "projectId (PK, FK)" [String].
+A one-to-many relationship connects "Partners" to "well_projects".
+A one-to-many relationship connects "well_projects" to "ProjectUpdates".
+A one-to-many relationship connects "Users" to "saved_projects".
+A one-to-many relationship connects "well_projects" to "saved_projects".
