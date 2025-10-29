@@ -75,9 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function initMap() {
         // Ensure Leaflet (L) is loaded
         if (typeof L === 'undefined') {
-             console.error("Leaflet library not loaded!");
-             showMessage("Error: Map library failed to load.", true);
-             return;
+            console.error("Leaflet library not loaded!");
+            showMessage("Error: Map library failed to load.", true);
+            return;
         }
         
         if (map && map.getContainer()._leaflet_id) { // Check if map is already initialized
@@ -128,11 +128,11 @@ document.addEventListener('DOMContentLoaded', () => {
             updateUIForLoggedInUser(currentUser);
             showPage('home');
         } else if (email === "user@example.com" && password === "password") { // Simple dummy user login
-             currentUser = { id: "dummy-user-id", email: "user@example.com", name: "Regular User" };
-             isAdmin = false;
-             showMessage("Dummy Login Successful (Regular User).");
-             updateUIForLoggedInUser(currentUser);
-             showPage('home');
+            currentUser = { id: "dummy-user-id", email: "user@example.com", name: "Regular User" };
+            isAdmin = false;
+            showMessage("Dummy Login Successful (Regular User).");
+            updateUIForLoggedInUser(currentUser);
+            showPage('home');
         }
         else {
             showMessage("Dummy Login Failed: Invalid credentials or AWS not set up.", true);
@@ -178,8 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: "proj1", title: "Kenya Water Project", lat: 0.0236, lng: 37.9062, image: "https://via.placeholder.com/300x200?text=Kenya", status: "Funding", description: "Bringing clean water to a remote village in Kenya.", contribution: "Donate to our NGO partner." },
         { id: "proj2", title: "Uganda Borehole Initiative", lat: 1.3733, lng: 32.2903, image: "https://via.placeholder.com/300x200?text=Uganda", status: "In Progress", description: "Drilling new boreholes in rural Uganda.", contribution: "Volunteer on the ground." },
         { id: "proj3", title: "Ethiopia Sanitation Program", lat: 9.1450, lng: 40.4897, image: "https://via.placeholder.com/300x200?text=Ethiopia", status: "Complete", description: "Completed a sanitation and water access project.", contribution: "Spread the word about our success." },
-         { id: "proj4", title: "Tanzania Well Repair", lat: -6.3690, lng: 34.8888, image: "https://via.placeholder.com/300x200?text=Tanzania", status: "Funding", description: "Repairing a broken well serving 500 people.", contribution: "Any amount helps fund the repairs." },
-         { id: "proj5", title: "Rwanda Community Tap", lat: -1.9403, lng: 29.8739, image: "https://via.placeholder.com/300x200?text=Rwanda", status: "In Progress", description: "Installing a communal tap in a growing community.", contribution: "Local volunteers needed for distribution." },
+        { id: "proj4", title: "Tanzania Well Repair", lat: -6.3690, lng: 34.8888, image: "https://via.placeholder.com/300x200?text=Tanzania", status: "Funding", description: "Repairing a broken well serving 500 people.", contribution: "Any amount helps fund the repairs." },
+        { id: "proj5", title: "Rwanda Community Tap", lat: -1.9403, lng: 29.8739, image: "https://via.placeholder.com/300x200?text=Rwanda", status: "In Progress", description: "Installing a communal tap in a growing community.", contribution: "Local volunteers needed for distribution." },
     ];
     let dummySavedProjects = []; // Stores IDs of projects saved by the dummy user
 
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Dummy Admin Functionality ---
     document.getElementById('add-project-btn').addEventListener('click', () => {
-         if (!isAdmin) return showMessage("Access denied. Log in as admin@example.com / password.", true);
+        if (!isAdmin) return showMessage("Access denied. Log in as admin@example.com / password.", true);
         projectForm.reset();
         document.getElementById('project-id').value = '';
         modalTitle.textContent = "Add New Project (Dummy)";
@@ -297,11 +297,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     projectForm.addEventListener('submit', async (e) => {
-         e.preventDefault();
-         if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
-         
-         const id = document.getElementById('project-id').value || 'proj' + (dummyProjects.length + 1);
-         const projectData = {
+        e.preventDefault();
+        if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
+        
+        const id = document.getElementById('project-id').value || 'proj' + (dummyProjects.length + 1);
+        const projectData = {
             id: id,
             title: document.getElementById('project-title').value,
             lat: parseFloat(document.getElementById('project-lat').value),
@@ -310,29 +310,29 @@ document.addEventListener('DOMContentLoaded', () => {
             status: document.getElementById('project-status').value,
             description: document.getElementById('project-description').value,
             contribution: document.getElementById('project-contribution').value,
-         };
+        };
 
-         if (isNaN(projectData.lat) || isNaN(projectData.lng)) {
-              return showMessage("Latitude and Longitude must be valid numbers.", true);
-         }
+        if (isNaN(projectData.lat) || isNaN(projectData.lng)) {
+            return showMessage("Latitude and Longitude must be valid numbers.", true);
+        }
 
-         const existingIndex = dummyProjects.findIndex(p => p.id === id);
-         if (existingIndex !== -1) {
+        const existingIndex = dummyProjects.findIndex(p => p.id === id);
+        if (existingIndex !== -1) {
              dummyProjects[existingIndex] = projectData; // Update
-             showMessage("Dummy Project updated successfully!");
-         } else {
+            showMessage("Dummy Project updated successfully!");
+        } else {
              dummyProjects.push(projectData); // Add
-             showMessage("Dummy Project added successfully!");
-         }
-         
-         console.log("Current dummyProjects:", dummyProjects);
-         projectModal.classList.add('hidden');
+            showMessage("Dummy Project added successfully!");
+        }
+        
+        console.log("Current dummyProjects:", dummyProjects);
+        projectModal.classList.add('hidden');
          fetchAndDisplayWells(); // Refresh map with dummy data
-         showPage('map-page');
+        showPage('map-page');
     });
     
     async function openEditModal(projectId) {
-         if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
+        if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
         
         const project = dummyProjects.find(p => p.id === projectId);
         if (project) {
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalTitle.textContent = "Edit Project (Dummy)";
             projectModal.classList.remove('hidden');
         } else {
-             showMessage("Dummy Project not found.", true);
+            showMessage("Dummy Project not found.", true);
         }
     }
     
