@@ -107,16 +107,16 @@ Week 6 (Dec 3 - Dec 9): Final Testing, Deployment & Submission
 
 Our project is a Single Page Application (SPA). All "views" are <section> elements within the single index.html file, which are shown or hidden by JavaScript.
 
-home (ID): The main landing page.
+    home (ID): The main landing page.
 
-map-page (ID): The view containing the Leaflet interactive map.
+    map-page (ID): The view containing the Leaflet interactive map.
 
-project-detail (ID): A dynamic view that will be populated with a specific project's info.
+    project-detail (ID): A dynamic view that will be populated with a specific project's info.
 
-login (ID): The user login form.
+    login (ID): The user login form.
 
-register (ID): The new user registration form.
+    register (ID): The new user registration form.
 
-dashboard (ID): The logged-in user's personal dashboard to view their saved projects.
+    dashboard (ID): The logged-in user's personal dashboard to view their saved projects.
 
-project-modal (ID): The popup modal form for admins to add/edit projects.
+    project-modal (ID): The popup modal form for admins to add/edit projects.
