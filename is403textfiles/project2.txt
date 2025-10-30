@@ -7,135 +7,103 @@ Project: An AWS-hosted web platform to track and share information about global 
 
 To ensure all parts of the project are covered efficiently, the work will be divided as follows:
 
-John Everett (Cloud Architect / Backend Lead):
+John Everett (Backend & Cloud Lead):
 
-Set up and configure all required AWS services (Cognito, DynamoDB, S3 for images if needed).
+    Set up and configure all required AWS services (Cognito, DynamoDB).
 
-Manage IAM roles and permissions.
+    Manage IAM roles and permissions.
 
-Implement all backend logic in app.js for connecting to Cognito (authentication) and DynamoDB (database operations).
+    Implement all backend logic in server.js for API routes, database connections, and authentication.
 
-Write the core CRUD (Create, Read, Update, Delete) functions for the database.
+    Write the core server-side CRUD functions (Create, Read, Update, Delete) that the frontend will call.
 
-Cole Latour (Frontend / Map Integration):
+Cole Latour (Frontend Lead - Public):
 
-Structure the main index.html file and manage all page sections.
+    Structure the main index.ejs file and manage all public-facing page sections (Homepage, Map Page, Project Detail).
 
-Implement the Leaflet interactive map.
+    Implement the Leaflet interactive map and its data fetching logic.
 
-Ensure the map correctly fetches and displays project location data from the database.
+    Handle all primary client-side navigation (page switching) in app.js.
 
-Handle all frontend navigation and page switching logic in app.js.
+    Responsible for the style.css and responsiveness of the main site components (Header, Footer, Homepage, Map Page).
 
-Sarah Peck (UI/UX Design / CSS Lead):
+Sarah Peck (Frontend Developer - User Features):
 
-Responsible for the overall look and feel of the website, focusing on a professional, humanitarian aesthetic.
+    Implement the client-side logic for all user-specific features in app.js.
 
-Manage the style.css file, including the hero image, color palette, and typography.
+    Build the functionality for the Login and Register forms (calling John's backend auth).
 
-Ensure the website is fully responsive and looks good on mobile devices.
+    Implement the full client-side logic for the User Dashboard (saving, unsaving, and viewing projects).
 
-Create the static HTML for the project detail, dashboard, and modal views.
+    Responsible for the style.css and responsiveness of the components she builds (Login/Register forms, Dashboard, and Admin Modal).
 
-Chase Fisher (Database / Admin & QA):
+Chase Fisher (Database & QA Lead):
 
-Design the DynamoDB table schemas (well_projects, saved_projects).
+    Design and document the DynamoDB table schemas (well_projects, saved_projects, etc.).
 
-Implement the admin-only functionality (Add, Edit, Delete projects).
+    Implement the client-side logic for the admin-only features (Add, Edit, Delete project buttons) that call John's backend functions.
 
-Implement the user dashboard functionality (saving/viewing projects).
-
-Lead testing and quality assurance (QA) to find and log bugs.
+    Lead testing and quality assurance (QA) for the entire application, finding and logging bugs.
 
 2. Schedule of Duty Completion
 
-This is a 4-week project schedule, with milestones at the end of each week.
+Due Date: December 10th
 
-Week 1 (Oct 29 - Nov 5): AWS Setup & Frontend Shell
+Week 1 (Oct 29 - Nov 4): Planning, AWS Setup & Frontend Shell
 
-John: AWS Cognito User Pool and Identity Pool are created. DynamoDB tables are provisioned.
+    John: AWS Cognito User Pool and Identity Pool are created. DynamoDB tables are provisioned. server.js is set up to serve the basic EJS page.
 
-Sarah/Cole: index.html (Landing Page, Login Page) and style.css are complete (non-functional).
+    Cole: The main views/index.ejs file is structured. The public/style.css file is created with the core humanitarian theme (colors, fonts). The static Homepage layout is complete (non-functional).
 
-Chase: Database ERD/Schema is finalized.
+    Chase: Database ERD/Schema is finalized and documented.
 
-All: Project plan (this document) submitted.
+    Sarah: The static HTML/CSS for the Login, Register, and Admin Modal components (within index.ejs) is complete and styled.
 
-Week 2 (Nov 6 - Nov 12): Core Functionality - Auth & Map
+    All: Project plan submitted.
 
-John: User registration and login (Cognito) are fully functional in app.js.
+Week 2 (Nov 5 - Nov 11): Core Auth & Map UI
 
-Cole: Leaflet map is initialized and displaying on the map page.
+    John: Backend API routes for user registration and login (Cognito) are created in server.js and tested.
 
-Chase: Admin modal is built; addDoc (Create) functionality is working.
+    Sarah: Client-side logic in public/app.js for the Login and Register forms is implemented and successfully calls John's backend auth routes.
 
-Sarah: CSS for map page and modals is complete.
+    Cole: Leaflet map is initialized and displaying on the map page (static, no data yet).
 
-Week 3 (Nov 13 - Nov 19): Full CRUD & User Features
+Week 3 (Nov 12 - Nov 18): Core Read & Create Functionality
 
-John/Chase: Full admin CRUD (Read, Update, Delete) for projects is complete and secured to admin users.
+    John: Backend API routes for "Create Project" (admin) and "Read All Projects" (public) are complete.
 
-Cole: Map now successfully reads and displays all projects from DynamoDB.
+    Cole: Map now successfully reads and displays all projects from John's "Read" API route.
 
-Sarah: project-detail page is designed and populates with dynamic data.
+    Chase: Admin modal is functional; client-side logic for the "Add Project" button is implemented (calling John's "Create" route).
 
-Chase: User "Save Project" and "Dashboard" functionality is implemented.
+Week 4 (Nov 19 - Nov 25): Full CRUD & User Dashboard
 
-Week 4 (Nov 20 - Nov 26): Finalization & Testing
+    John: Backend API routes for "Update" & "Delete" (admin) are complete and secured.
 
-Sarah: Final UI/UX polish and responsive design review.
+    Sarah: Client-side logic for the User Dashboard (Save Project, Unsave Project, View Saved Projects) is fully implemented.
 
-Chase: Full site QA and bug testing.
+    Chase: Client-side logic for "Edit" and "Delete" buttons is implemented and secured to admin users.
 
-Cole: Fix all outstanding navigation and map bugs.
+Week 5 (Nov 26 - Dec 2): Feature Polish & Initial Testing
 
-John: Finalize AWS permissions and prepare for deployment.
+    Cole: project-detail page section is built and now populates with dynamic data when a map pin is clicked.
 
-All: Final project submission.
+    Sarah: Final UI/UX polish and responsive design review for all user components (Login, Dashboard, Modals).
 
-3. Database Layout (ERD)
+    Chase: Begin full site QA and bug testing. Log all issues for the team.
 
-Since we are using AWS services, our "database" is a combination of Cognito (for users) and DynamoDB (for data), which is a NoSQL database.
+Week 6 (Dec 3 - Dec 9): Final Testing, Deployment & Submission
 
-Amazon Cognito User Pool: This acts as our security table. It securely stores all user information, including:
+    Cole: Final UI/UX polish for public components (Homepage, Map). Fix all outstanding bugs identified by Chase.
 
-userId (Primary Key, generated by Cognito)
+    John: Finalize all AWS IAM permissions and deploy the full application.
 
-email
+    Chase: Confirm all bugs are resolved and functionality meets requirements.
 
-name
+    All: Record demo video and submit the final project by Dec 10th.
 
-password (securely hashed and salted)
-
-DynamoDB Tables:
-
-well_projects: Stores all information for each well.
-
-id (Partition Key, String, UUID)
-
-title (String)
-
-description (String)
-
-lat (Number)
-
-lng (Number)
-
-image (String - URL)
-
-status (String - e.g., "Funding", "In Progress", "Complete")
-
-contribution (String - Info on how to help)
-
-saved_projects: A many-to-many link table for users and projects.
-
-userId (Partition Key, String - links to Cognito userId)
-
-projectId (Sort Key, String - links to well_projects.id)
-
-(See Database_ERD.png for a visual representation).
-
-4. List of Views
+3. List of Views
 
 Our project is a Single Page Application (SPA). All "views" are <section> elements within the single index.html file, which are shown or hidden by JavaScript.
 
