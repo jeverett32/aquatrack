@@ -1,4 +1,4 @@
-AquaTrack - Project Plan & Documentation
+1AquaTrack - Project Plan & Documentation
 
 Group Members: John Everett, Cole Latour, Sarah Peck, Chase Fisher
 Project: An AWS-hosted web platform to track and share information about global well projects, allowing users to find and follow projects of interest.
@@ -9,11 +9,11 @@ To ensure all parts of the project are covered efficiently, the work will be div
 
 John Everett (Backend & Cloud Lead):
 
-    Set up and configure all required AWS services (Cognito, DynamoDB).
+    Set up and configure the required AWS RDS database.
 
     Manage IAM roles and permissions.
 
-    Implement all backend logic in server.js for API routes, database connections, and authentication.
+    Implement all backend logic in server.js, including API routes, database connections, and a custom user authentication system (registration and login).
 
     Write the core server-side CRUD functions (Create, Read, Update, Delete) that the frontend will call.
 
@@ -39,7 +39,7 @@ Sarah Peck (Frontend Developer - User Features):
 
 Chase Fisher (Database & QA Lead):
 
-    Design and document the DynamoDB table schemas (well_projects, saved_projects, etc.).
+    Design and document the database schemas for all tables in RDS, including the `users` table for authentication and tables for `well_projects`, `saved_projects`, etc.
 
     Implement the client-side logic for the admin-only features (Add, Edit, Delete project buttons) that call John's backend functions.
 
@@ -51,7 +51,7 @@ Due Date: December 10th
 
 Week 1 (Oct 29 - Nov 4): Planning, AWS Setup & Frontend Shell
 
-    John: AWS Cognito User Pool and Identity Pool are created. DynamoDB tables are provisioned. server.js is set up to serve the basic EJS page.
+    John: AWS RDS database is provisioned. server.js is set up to serve the basic EJS page.
 
     Cole: The main views/index.ejs file is structured. The public/style.css file is created with the core humanitarian theme (colors, fonts). The static Homepage layout is complete (non-functional).
 
@@ -63,7 +63,7 @@ Week 1 (Oct 29 - Nov 4): Planning, AWS Setup & Frontend Shell
 
 Week 2 (Nov 5 - Nov 11): Core Auth & Map UI
 
-    John: Backend API routes for user registration and login (Cognito) are created in server.js and tested.
+    John: Backend API routes for user registration and login are created in server.js and tested.
 
     Sarah: Client-side logic in public/app.js for the Login and Register forms is implemented and successfully calls John's backend auth routes.
 

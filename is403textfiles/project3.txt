@@ -1,0 +1,49 @@
+This project will be full implementation of Project 2 with database.
+
+ 
+
+Remember to keep the project simple! I don't want you stressing too much in trying to make the perfect website that solves every problem in the world. A problem developers have is that instead of just meeting the requirements and making a good, clean, simple project, they will often start thinking things like "You know what would be cool..." or "Maybe I will add this also even though it isn't required". Trying to store images can be tricky so be careful. If your project needs to do this, here is a short video I found that might be help. Also use AI to help. https://www.youtube.com/watch?v=SAUvlkTDMM4
+
+ 
+
+The project is based upon what you submitted for Project 1. It also incorporates the views and ERD from Project 2.
+
+ 
+
+The project must have some place where a user can log in and based upon that, has security to do something (i.e. edit records, add records, see some type of data, etc.). I cannot say what because every project is different.
+
+ 
+
+The project must incorporate the ability to display records, add records, edit records, and delete records. Within the code itself, you will also implement searching which is how you will find a record to edit or delete or display.
+
+ 
+
+Make the views look professional. You can use CSS, an AI, Bootstrap, whatever tool that will help you get it done.
+
+ 
+
+This must be deployed! Professor S in IS404 will teach you how to deploy. That means the database and the web site will be sent to a site like AWS but you can choose any host. Just try to avoid one that will charge (which is why you can use your credits at AWS).
+
+ 
+
+Submit a short video demonstrating the functionality of your project. Show that the add, edit, delete, and searching work. Also show how the log in works. Make sure that the pages/views you created are shown in the videos.
+
+ 
+
+You do NOT have to submit the code!
+
+ 
+
+BUT, we need you to supply the username and password for the security. Put that in the comments of the submission.
+
+ 
+
+The base score will be 85% with the remaining 15% for creativity and professionalism.
+
+ 
+
+Make this look great!
+
+ 
+
+As stated above and LIKE INTEX, please submit a short (less than 5 minute) video demonstrating the deployed website.
