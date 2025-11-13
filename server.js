@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = process.env.PORT || 3000;
+app.listen(port, () => console.log("Website is running!"));
 const saltRounds = 10; // for bcrypt
 
 // Create a new PostgreSQL connection pool
