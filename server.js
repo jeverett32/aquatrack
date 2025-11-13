@@ -6,6 +6,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
+
+app.set('view engine', 'ejs');
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log("Website is running!"));
 const saltRounds = 10; // for bcrypt
@@ -14,12 +17,12 @@ const saltRounds = 10; // for bcrypt
 const knex = require('knex')({
     client: 'pg',
     connection: {
-        host: process.env.DB_HOST || "localhost",
-        user: process.env.DB_USER || "postgres",
-        password: process.env.DB_PASSWORD || "SuperSecretPassword",
-        database: process.env.DB_DATABASE || "aquatrack",
-        port: process.env.DB_PORT || 5432,
-        ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
+        host: process.env.RDS_HOSTNAME || "localhost",
+        user: process.env.RDS_USERNAME || "postgres",
+        password: process.env.RDS_PASSWORD || "SuperSecretPassword",
+        database: process.env.RDS_DATABASE || "aquatrack",
+        port: process.env.RDS_PORT || 5433,
+        ssl: process.env.RDS_SSL ? {rejectUnauthorized: false} : false
     }
 });
 
