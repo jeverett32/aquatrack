@@ -1,252 +1,151 @@
 ----------------------------------------
-/var/log/web.stdout.log
-----------------------------------------
-Nov 13 19:15:00 ip-172-31-95-201 web[2320]:    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
-Nov 13 19:15:00 ip-172-31-95-201 web[2320]:    at Module.require (node:internal/modules/cjs/loader:1463:12)
-Nov 13 19:15:00 ip-172-31-95-201 web[2320]:    at require (node:internal/modules/helpers:147:16)
-Nov 13 19:15:00 ip-172-31-95-201 web[2320]:    at Object.<anonymous> (/var/app/current/server.js:31:14)
-Nov 13 19:15:00 ip-172-31-95-201 web[2320]:    at Module._compile (node:internal/modules/cjs/loader:1706:14) {
-Nov 13 19:15:00 ip-172-31-95-201 web[2320]:  code: 'MODULE_NOT_FOUND',
-Nov 13 19:15:00 ip-172-31-95-201 web[2320]:  requireStack: [ '/var/app/current/server.js' ]
-Nov 13 19:15:00 ip-172-31-95-201 web[2320]: }
-Nov 13 19:15:00 ip-172-31-95-201 web[2320]: Node.js v22.21.1
-Nov 13 19:15:00 ip-172-31-95-201 web[2328]: > aquatrack@1.0.0 start
-Nov 13 19:15:00 ip-172-31-95-201 web[2328]: > node server.js
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]: [dotenv@17.2.3] injecting env (0) from .env -- tip: ðŸ‘¥ sync secrets across teammates & machines: https://dotenvx.com/ops
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]: node:internal/modules/cjs/loader:1386
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:  throw err;
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:  ^
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]: Error: Cannot find module 'knex'
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]: Require stack:
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]: - /var/app/current/server.js
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at Module._resolveFilename (node:internal/modules/cjs/loader:1383:15)
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at Module._load (node:internal/modules/cjs/loader:1192:37)
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at Module.require (node:internal/modules/cjs/loader:1463:12)
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at require (node:internal/modules/helpers:147:16)
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at Object.<anonymous> (/var/app/current/server.js:31:14)
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:    at Module._compile (node:internal/modules/cjs/loader:1706:14) {
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:  code: 'MODULE_NOT_FOUND',
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]:  requireStack: [ '/var/app/current/server.js' ]
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]: }
-Nov 13 19:15:01 ip-172-31-95-201 web[2342]: Node.js v22.21.1
-Nov 13 19:15:02 ip-172-31-95-201 web[2350]: > aquatrack@1.0.0 start
-Nov 13 19:15:02 ip-172-31-95-201 web[2350]: > node server.js
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]: [dotenv@17.2.3] injecting env (0) from .env -- tip: ðŸ“¡ add observability to secrets: https://dotenvx.com/ops
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]: node:internal/modules/cjs/loader:1386
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:  throw err;
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:  ^
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]: Error: Cannot find module 'knex'
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]: Require stack:
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]: - /var/app/current/server.js
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at Module._resolveFilename (node:internal/modules/cjs/loader:1383:15)
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at Module._load (node:internal/modules/cjs/loader:1192:37)
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at Module.require (node:internal/modules/cjs/loader:1463:12)
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at require (node:internal/modules/helpers:147:16)
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at Object.<anonymous> (/var/app/current/server.js:31:14)
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:    at Module._compile (node:internal/modules/cjs/loader:1706:14) {
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:  code: 'MODULE_NOT_FOUND',
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]:  requireStack: [ '/var/app/current/server.js' ]
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]: }
-Nov 13 19:15:03 ip-172-31-95-201 web[2364]: Node.js v22.21.1
-Nov 13 19:26:04 ip-172-31-95-201 web[3254]: > aquatrack@1.0.0 start
-Nov 13 19:26:04 ip-172-31-95-201 web[3254]: > node server.js
-Nov 13 19:26:04 ip-172-31-95-201 web[3301]: [dotenv@17.2.3] injecting env (0) from .env -- tip: ðŸ” prevent committing .env to code: https://dotenvx.com/precommit
-Nov 13 19:26:05 ip-172-31-95-201 web[3301]: Website is running!
-Nov 13 19:26:05 ip-172-31-95-201 web[3301]: Server listening at http://localhost:8080
-Nov 13 19:26:05 ip-172-31-95-201 web[3301]: Error connecting to the database: Error: connect ECONNREFUSED 127.0.0.1:5432
-Nov 13 19:26:05 ip-172-31-95-201 web[3301]:    at /var/app/current/node_modules/pg-pool/index.js:45:11
-Nov 13 19:26:05 ip-172-31-95-201 web[3301]:    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-Nov 13 19:26:05 ip-172-31-95-201 web[3301]:    at async Server.<anonymous> (/var/app/current/server.js:296:24)
-Nov 13 19:31:06 ip-172-31-95-201 web[3997]: > aquatrack@1.0.0 start
-Nov 13 19:31:06 ip-172-31-95-201 web[3997]: > node server.js
-Nov 13 19:31:07 ip-172-31-95-201 web[4039]: [dotenv@17.2.3] injecting env (0) from .env -- tip: ðŸ“¡ add observability to secrets: https://dotenvx.com/ops
-Nov 13 19:31:07 ip-172-31-95-201 web[4039]: Website is running!
-Nov 13 19:31:07 ip-172-31-95-201 web[4039]: Server listening at http://localhost:8080
-Nov 13 19:31:07 ip-172-31-95-201 web[4039]: Error connecting to the database: Error: connect ECONNREFUSED 127.0.0.1:5432
-Nov 13 19:31:07 ip-172-31-95-201 web[4039]:    at /var/app/current/node_modules/pg-pool/index.js:45:11
-Nov 13 19:31:07 ip-172-31-95-201 web[4039]:    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-Nov 13 19:31:07 ip-172-31-95-201 web[4039]:    at async Server.<anonymous> (/var/app/current/server.js:296:24)
-Nov 13 19:39:20 ip-172-31-95-201 web[4887]: > aquatrack@1.0.0 start
-Nov 13 19:39:20 ip-172-31-95-201 web[4887]: > node server.js
-Nov 13 19:39:20 ip-172-31-95-201 web[4931]: [dotenv@17.2.3] injecting env (0) from .env -- tip: ðŸ” encrypt with Dotenvx: https://dotenvx.com
-Nov 13 19:39:20 ip-172-31-95-201 web[4931]: Website is running!
-Nov 13 19:39:20 ip-172-31-95-201 web[4931]: Server listening at http://localhost:8080
-Nov 13 19:39:20 ip-172-31-95-201 web[4931]: Error connecting to the database: Error: connect ECONNREFUSED 127.0.0.1:5432
-Nov 13 19:39:20 ip-172-31-95-201 web[4931]:    at /var/app/current/node_modules/pg-pool/index.js:45:11
-Nov 13 19:39:20 ip-172-31-95-201 web[4931]:    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-Nov 13 19:39:20 ip-172-31-95-201 web[4931]:    at async Server.<anonymous> (/var/app/current/server.js:296:24)
-Nov 13 19:41:28 ip-172-31-95-201 web[5548]: > aquatrack@1.0.0 start
-Nov 13 19:41:28 ip-172-31-95-201 web[5548]: > node server.js
-Nov 13 19:41:28 ip-172-31-95-201 web[5595]: [dotenv@17.2.3] injecting env (0) from .env -- tip: âš™ï¸  override existing env vars with { override: true }
-Nov 13 19:41:29 ip-172-31-95-201 web[5595]: Website is running!
-Nov 13 19:41:29 ip-172-31-95-201 web[5595]: Server listening at http://localhost:8080
-Nov 13 19:41:29 ip-172-31-95-201 web[5595]: Error connecting to the database: Error: connect ECONNREFUSED 127.0.0.1:5432
-Nov 13 19:41:29 ip-172-31-95-201 web[5595]:    at /var/app/current/node_modules/pg-pool/index.js:45:11
-Nov 13 19:41:29 ip-172-31-95-201 web[5595]:    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-Nov 13 19:41:29 ip-172-31-95-201 web[5595]:    at async Server.<anonymous> (/var/app/current/server.js:296:24)
-Nov 13 20:05:53 ip-172-31-95-201 web[7034]: > aquatrack@1.0.0 start
-Nov 13 20:05:53 ip-172-31-95-201 web[7034]: > node server.js
-Nov 13 20:05:54 ip-172-31-95-201 web[7076]: [dotenv@17.2.3] injecting env (0) from .env -- tip: ðŸ” encrypt with Dotenvx: https://dotenvx.com
-Nov 13 20:05:54 ip-172-31-95-201 web[7076]: Website is running!
-Nov 13 20:05:54 ip-172-31-95-201 web[7076]: Server listening at http://localhost:8080
-Nov 13 20:05:54 ip-172-31-95-201 web[7076]: Error connecting to the database: Error: connect ECONNREFUSED 127.0.0.1:5432
-Nov 13 20:05:54 ip-172-31-95-201 web[7076]:    at /var/app/current/node_modules/pg-pool/index.js:45:11
-Nov 13 20:05:54 ip-172-31-95-201 web[7076]:    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-Nov 13 20:05:54 ip-172-31-95-201 web[7076]:    at async Server.<anonymous> (/var/app/current/server.js:296:24)
-
-
-----------------------------------------
-/var/log/eb-engine.log
-----------------------------------------
-2025/11/13 20:05:51.183006 [WARN] stopProcess Warning: process xray is not registered 
-2025/11/13 20:05:51.183037 [INFO] Running command: systemctl stop xray.service
-2025/11/13 20:05:51.197830 [INFO] Executing instruction: stop proxy
-2025/11/13 20:05:51.197874 [INFO] Running command: systemctl show -p PartOf httpd.service
-2025/11/13 20:05:51.211541 [WARN] deregisterProcess Warning: process httpd is not registered, skipping...
-
-2025/11/13 20:05:51.211573 [INFO] Running command: systemctl show -p PartOf nginx.service
-2025/11/13 20:05:51.223584 [INFO] Running command: systemctl is-active nginx.service
-2025/11/13 20:05:51.231435 [INFO] Running command: systemctl show -p PartOf nginx.service
-2025/11/13 20:05:51.240216 [INFO] Running command: systemctl stop nginx.service
-2025/11/13 20:05:51.426244 [INFO] Running command: systemctl disable nginx.service
-2025/11/13 20:05:51.654770 [INFO] Running command: systemctl daemon-reload
-2025/11/13 20:05:51.939541 [INFO] Running command: systemctl reset-failed
-2025/11/13 20:05:51.948747 [INFO] Executing instruction: FlipApplication
-2025/11/13 20:05:51.948772 [INFO] Fetching environment variables...
-2025/11/13 20:05:51.948795 [INFO] setting default port 8080 to application
-2025/11/13 20:05:51.948968 [INFO] Purge old process...
-2025/11/13 20:05:51.948999 [INFO] Running command: systemctl stop eb-app.target
-2025/11/13 20:05:51.958383 [INFO] Running command: systemctl show -p ConsistsOf eb-app.target | cut -d= -f2
-2025/11/13 20:05:51.995963 [INFO] web.service
-
-2025/11/13 20:05:51.995982 [INFO] deregistering process: web
-2025/11/13 20:05:51.995991 [INFO] Running command: systemctl show -p PartOf web.service
-2025/11/13 20:05:52.037541 [INFO] Running command: systemctl is-active web.service
-2025/11/13 20:05:52.044734 [INFO] Running command: systemctl disable web.service
-2025/11/13 20:05:52.324739 [INFO] Removed "/etc/systemd/system/multi-user.target.wants/web.service".
-
-2025/11/13 20:05:52.324845 [INFO] Running command: systemctl daemon-reload
-2025/11/13 20:05:52.577946 [INFO] Running command: systemctl reset-failed
-2025/11/13 20:05:52.586718 [INFO] Running command: systemctl is-active web.service
-2025/11/13 20:05:52.594411 [INFO] Process web has been fully terminated
-2025/11/13 20:05:52.594435 [INFO] All processes have been fully terminated
-2025/11/13 20:05:52.594440 [INFO] Removing /var/app/current/ if it exists
-2025/11/13 20:05:52.660176 [INFO] Renaming /var/app/staging/ to /var/app/current/
-2025/11/13 20:05:52.660213 [INFO] Register application processes...
-2025/11/13 20:05:52.660223 [INFO] Registering the proc: web
-
-2025/11/13 20:05:52.660233 [INFO] Running command: systemctl show -p PartOf web.service
-2025/11/13 20:05:52.681461 [INFO] Running command: systemctl daemon-reload
-2025/11/13 20:05:52.922912 [INFO] Running command: systemctl reset-failed
-2025/11/13 20:05:52.931567 [INFO] Running command: systemctl is-enabled eb-app.target
-2025/11/13 20:05:52.939568 [INFO] Running command: systemctl enable eb-app.target
-2025/11/13 20:05:53.226215 [INFO] Running command: systemctl start eb-app.target
-2025/11/13 20:05:53.235646 [INFO] Running command: systemctl enable web.service
-2025/11/13 20:05:53.465521 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/web.service â†’ /etc/systemd/system/web.service.
-
-2025/11/13 20:05:53.465551 [INFO] Running command: systemctl show -p PartOf web.service
-2025/11/13 20:05:53.476861 [INFO] Running command: systemctl is-active web.service
-2025/11/13 20:05:53.484629 [INFO] Running command: systemctl start web.service
-2025/11/13 20:05:53.541123 [INFO] Executing instruction: start X-Ray
-2025/11/13 20:05:53.541142 [INFO] X-Ray is not enabled.
-2025/11/13 20:05:53.541146 [INFO] Executing instruction: start proxy with new configuration
-2025/11/13 20:05:53.541169 [INFO] Running command: /usr/sbin/nginx -t -c /var/proxy/staging/nginx/nginx.conf
-2025/11/13 20:05:53.567196 [INFO] nginx: [warn] could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
-nginx: the configuration file /var/proxy/staging/nginx/nginx.conf syntax is ok
-nginx: configuration file /var/proxy/staging/nginx/nginx.conf test is successful
-
-2025/11/13 20:05:53.567534 [INFO] Running command: cp -rp /var/proxy/staging/nginx/* /etc/nginx
-2025/11/13 20:05:53.571988 [INFO] Running command: systemctl show -p PartOf nginx.service
-2025/11/13 20:05:53.595007 [INFO] Running command: systemctl daemon-reload
-2025/11/13 20:05:54.002854 [INFO] Running command: systemctl reset-failed
-2025/11/13 20:05:54.015753 [INFO] Running command: systemctl show -p PartOf nginx.service
-2025/11/13 20:05:54.035867 [INFO] Running command: systemctl is-active nginx.service
-2025/11/13 20:05:54.050104 [INFO] Running command: systemctl start nginx.service
-2025/11/13 20:05:54.177425 [INFO] Executing instruction: configureSqsd
-2025/11/13 20:05:54.177444 [INFO] This is a web server environment instance, skip configure sqsd daemon ...
-2025/11/13 20:05:54.177448 [INFO] Executing instruction: startSqsd
-2025/11/13 20:05:54.177451 [INFO] This is a web server environment instance, skip start sqsd daemon ...
-2025/11/13 20:05:54.177455 [INFO] Executing instruction: Track pids in healthd
-2025/11/13 20:05:54.177458 [INFO] This is an enhanced health env...
-2025/11/13 20:05:54.177470 [INFO] Running command: systemctl show -p ConsistsOf aws-eb.target | cut -d= -f2
-2025/11/13 20:05:54.193079 [INFO] healthd.service cfn-hup.service nginx.service
-
-2025/11/13 20:05:54.193113 [INFO] Running command: systemctl show -p ConsistsOf eb-app.target | cut -d= -f2
-2025/11/13 20:05:54.209714 [INFO] web.service
-
-2025/11/13 20:05:54.210152 [INFO] Executing instruction: RunAppDeployPostDeployHooks
-2025/11/13 20:05:54.210179 [INFO] Executing platform hooks in .platform/hooks/postdeploy/
-2025/11/13 20:05:54.210203 [INFO] The dir .platform/hooks/postdeploy/ does not exist
-2025/11/13 20:05:54.210207 [INFO] Finished running scripts in /var/app/current/.platform/hooks/postdeploy
-2025/11/13 20:05:54.210213 [INFO] Executing cleanup logic
-2025/11/13 20:05:54.210309 [INFO] CommandService Response: {"status":"SUCCESS","api_version":"1.0","results":[{"status":"SUCCESS","msg":"Engine execution has succeeded.","returncode":0,"events":[{"msg":"Instance deployment completed successfully.","timestamp":1763064354210,"severity":"INFO"}]}]}
-
-2025/11/13 20:05:54.211566 [INFO] Platform Engine finished execution on command: app-deploy
-
-2025/11/13 20:06:44.840038 [INFO] Starting...
-2025/11/13 20:06:44.840083 [INFO] Starting EBPlatform-PlatformEngine
-2025/11/13 20:06:44.840107 [INFO] reading event message file
-2025/11/13 20:06:44.840496 [INFO] Engine received EB command cfn-hup-exec
-
-2025/11/13 20:06:44.919201 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-east-1:154231848556:stack/awseb-e-tifh2fhr2i-stack/8935de50-c0c3-11f0-a2c4-120567f4b1f1 -r AWSEBAutoScalingGroup --region us-east-1
-2025/11/13 20:06:45.213742 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-east-1:154231848556:stack/awseb-e-tifh2fhr2i-stack/8935de50-c0c3-11f0-a2c4-120567f4b1f1 -r AWSEBBeanstalkMetadata --region us-east-1
-2025/11/13 20:06:45.500703 [INFO] checking whether command tail-log is applicable to this instance...
-2025/11/13 20:06:45.500715 [INFO] this command is applicable to the instance, thus instance should execute command
-2025/11/13 20:06:45.500717 [INFO] Engine command: (tail-log)
-
-2025/11/13 20:06:45.500765 [INFO] Executing instruction: GetTailLogs
-2025/11/13 20:06:45.500768 [INFO] Tail Logs...
-2025/11/13 20:06:45.501356 [INFO] Running command: tail -n 100 /var/log/web.stdout.log
-2025/11/13 20:06:45.503476 [INFO] Running command: tail -n 100 /var/log/eb-engine.log
-
-
-----------------------------------------
 /var/log/eb-hooks.log
 ----------------------------------------
+2025/11/13 22:03:32.077515 [INFO] Running command: .platform/hooks/postdeploy/00_get_certificate.sh
+2025/11/13 22:03:44.643391 [INFO] Account registered.
+Requesting a certificate for aquatrack.is404.net
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/aquatrack.is404.net/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/aquatrack.is404.net/privkey.pem
+This certificate expires on 2026-02-11.
+These files will be updated when the certificate renews.
+
+Deploying certificate
+Successfully deployed certificate for aquatrack.is404.net to /etc/nginx/nginx.conf
+Congratulations! You have successfully enabled HTTPS on https://aquatrack.is404.net
+NEXT STEPS:
+- The certificate will need to be renewed before it expires. Certbot can automatically renew the certificate in the background, but you may need to take steps to enable that functionality. See https://certbot.org/renewal-setup for instructions.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+2025/11/13 22:03:44.643415 [INFO] Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Python 3.9 support will be dropped in the next planned release of Certbot - please upgrade your Python version.
+
+2025/11/13 22:11:05.529219 [INFO] Running command: .platform/hooks/postdeploy/00_get_certificate.sh
+2025/11/13 22:11:09.895490 [INFO] Certificate not yet due for renewal
+Deploying certificate
+Successfully deployed certificate for aquatrack.is404.net to /etc/nginx/nginx.conf
+Congratulations! You have successfully enabled HTTPS on https://aquatrack.is404.net
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+2025/11/13 22:11:09.895522 [INFO] Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Python 3.9 support will be dropped in the next planned release of Certbot - please upgrade your Python version.
+
 
 
 ----------------------------------------
 /var/log/nginx/access.log
 ----------------------------------------
-51.158.54.10 - - [13/Nov/2025:19:20:00 +0000] "GET / HTTP/1.0" 502 150 "-" "ivre-masscan/1.3 https://github.com/robertdavidgraham/" "-"
-205.210.31.29 - - [13/Nov/2025:19:23:14 +0000] "GET / HTTP/1.0" 502 150 "-" "Hello from Palo Alto Networks, find out more about our scans in https://docs-cortex.paloaltonetworks.com/r/1/Cortex-Xpanse/Scanning-activity" "-"
-128.187.116.1 - - [13/Nov/2025:19:27:21 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:27:22 +0000] "GET /style.css HTTP/1.1" 200 767 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:27:22 +0000] "GET /app.js HTTP/1.1" 200 20600 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:27:23 +0000] "GET /images/hero-background.jpg HTTP/1.1" 200 190646 "http://aquatrack.us-east-1.elasticbeanstalk.com/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:27:24 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:27:31 +0000] "GET /style.css HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-205.169.39.11 - - [13/Nov/2025:19:27:41 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36" "-"
-205.169.39.20 - - [13/Nov/2025:19:27:43 +0000] "GET /app.js HTTP/1.1" 200 20600 "-" "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:32:22 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:32:22 +0000] "GET /style.css HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:32:22 +0000] "GET /app.js HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:32:22 +0000] "GET /images/hero-background.jpg HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-204.76.203.212 - - [13/Nov/2025:19:38:47 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46" "-"
-128.187.116.1 - - [13/Nov/2025:19:42:11 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:42:11 +0000] "GET /app.js HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:42:11 +0000] "GET /style.css HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:42:11 +0000] "GET /images/hero-background.jpg HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:42:17 +0000] "GET /style.css HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:42:19 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:42:20 +0000] "GET /app.js HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-128.187.116.1 - - [13/Nov/2025:19:42:20 +0000] "GET /style.css HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
-20.46.232.134 - - [13/Nov/2025:19:48:38 +0000] "GET /developmentserver/metadatauploader HTTP/1.1" 404 173 "-" "Mozilla/5.0 zgrab/0.x" "-"
-159.223.65.31 - - [13/Nov/2025:19:53:56 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36" "-"
-128.187.112.26 - - [13/Nov/2025:20:01:38 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0" "-"
-128.187.112.26 - - [13/Nov/2025:20:02:41 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0" "-"
-118.123.1.38 - - [13/Nov/2025:20:06:34 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.3; KB974488)" "105.22.58.73"
-118.123.1.38 - - [13/Nov/2025:20:06:34 +0000] "GET /visitors_online HTTP/1.1" 404 154 "-" "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.3; KB974488)" "105.22.58.73"
-118.123.1.38 - - [13/Nov/2025:20:06:34 +0000] "GET /getServerConfig HTTP/1.1" 404 154 "-" "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.3; KB974488)" "105.22.58.73"
-216.180.246.69 - - [13/Nov/2025:20:06:42 +0000] "GET / HTTP/1.0" 400 0 "-" "'Mozilla/5.0 (compatible; GenomeCrawlerd/1.0; +https://www.nokia.com/genomecrawler)'" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:49 +0000] "GET /vendor/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 196 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:49 +0000] "GET /phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 182 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:49 +0000] "GET /phpunit/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 178 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:49 +0000] "GET /phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 174 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:49 +0000] "GET /phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 170 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:49 +0000] "GET /lib/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 186 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:49 +0000] "GET /lib/phpunit/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 182 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:49 +0000] "GET /lib/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 178 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:49 +0000] "GET /lib/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 174 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:50 +0000] "GET /lib/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 193 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:50 +0000] "GET /laravel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 197 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:50 +0000] "GET /www/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 193 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:50 +0000] "GET /ws/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 192 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:50 +0000] "GET /yii/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 193 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:50 +0000] "GET /zend/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 194 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:50 +0000] "GET /ws/ec/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 195 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:50 +0000] "GET /V2/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 192 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:50 +0000] "GET /tests/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 195 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /test/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 194 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /testing/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 197 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 193 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /demo/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 194 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /cms/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 193 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /crm/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 193 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /admin/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 195 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /backup/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 196 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /blog/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 194 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:51 +0000] "GET /workspace/drupal/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 206 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:52 +0000] "GET /panel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 195 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:52 +0000] "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 196 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:52 +0000] "GET /apps/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 194 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:52 +0000] "GET /app/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 193 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:52 +0000] "GET /index.php?s=/index/\x5Cthink\x5Capp/invokefunction&function=call_user_func_array&vars[0]=md5&vars[1][]=Hello HTTP/1.1" 404 148 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:52 +0000] "GET /public/index.php?s=/index/\x5Cthink\x5Capp/invokefunction&function=call_user_func_array&vars[0]=md5&vars[1][]=Hello HTTP/1.1" 404 155 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:52 +0000] "GET /index.php?lang=../../../../../../../../usr/local/lib/php/pearcmd&+config-create+/&/<?echo(md5(\x22hi\x22));?>+/tmp/index1.php HTTP/1.1" 404 148 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:52 +0000] "GET /index.php?lang=../../../../../../../../tmp/index1 HTTP/1.1" 404 148 "-" "libredtail-http" "-"
+130.185.118.124 - - [13/Nov/2025:20:23:52 +0000] "GET /containers/json HTTP/1.1" 404 154 "-" "libredtail-http" "-"
+204.76.203.212 - - [13/Nov/2025:21:07:14 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36 Edg/90.0.818.46" "-"
+128.187.116.1 - - [13/Nov/2025:21:21:43 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:21:43 +0000] "GET /style.css HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:21:43 +0000] "GET /app.js HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:21:44 +0000] "GET /images/hero-background.jpg HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:44:04 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:44:04 +0000] "GET /style.css HTTP/1.1" 200 767 "http://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:44:04 +0000] "GET /app.js HTTP/1.1" 200 20600 "http://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:44:06 +0000] "GET /images/hero-background.jpg HTTP/1.1" 200 190646 "http://aquatrack.is404.net/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:44:06 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:50:59 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0" "-"
+128.187.116.1 - - [13/Nov/2025:21:52:01 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:52:01 +0000] "GET /style.css HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:52:01 +0000] "GET /app.js HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:52:02 +0000] "GET /images/hero-background.jpg HTTP/1.1" 304 0 "http://aquatrack.us-east-1.elasticbeanstalk.com/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:52:02 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://aquatrack.us-east-1.elasticbeanstalk.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:52:15 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:52:15 +0000] "GET /style.css HTTP/1.1" 304 0 "http://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:52:15 +0000] "GET /app.js HTTP/1.1" 304 0 "http://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:52:15 +0000] "GET /images/hero-background.jpg HTTP/1.1" 304 0 "http://aquatrack.is404.net/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:58:23 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:58:23 +0000] "GET /style.css HTTP/1.1" 304 0 "http://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:58:23 +0000] "GET /app.js HTTP/1.1" 304 0 "http://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:21:58:23 +0000] "GET /images/hero-background.jpg HTTP/1.1" 304 0 "http://aquatrack.is404.net/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+23.178.112.105 - - [13/Nov/2025:22:03:35 +0000] "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1" 200 87 "-" "Mozilla/5.0 (compatible; Let's Encrypt validation server; +https://www.letsencrypt.org)" "-"
+3.16.188.23 - - [13/Nov/2025:22:03:35 +0000] "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1" 200 87 "-" "Mozilla/5.0 (compatible; Let's Encrypt validation server; +https://www.letsencrypt.org)" "-"
+44.252.5.162 - - [13/Nov/2025:22:03:35 +0000] "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1" 200 87 "-" "Mozilla/5.0 (compatible; Let's Encrypt validation server; +https://www.letsencrypt.org)" "-"
+13.48.128.4 - - [13/Nov/2025:22:03:35 +0000] "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1" 200 87 "-" "Mozilla/5.0 (compatible; Let's Encrypt validation server; +https://www.letsencrypt.org)" "-"
+47.129.65.102 - - [13/Nov/2025:22:03:36 +0000] "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1" 200 87 "-" "Mozilla/5.0 (compatible; Let's Encrypt validation server; +https://www.letsencrypt.org)" "-"
+195.123.244.84 - - [13/Nov/2025:22:03:46 +0000] "HEAD / HTTP/1.1" 301 0 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:122.0) Gecko/20100101 Firefox/122.0"
+195.123.244.84 - - [13/Nov/2025:22:03:46 +0000] "HEAD / HTTP/1.1" 500 0 "http://aquatrack.is404.net" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:122.0) Gecko/20100101 Firefox/122.0" "-"
+34.123.170.104 - - [13/Nov/2025:22:03:56 +0000] "GET / HTTP/1.1" 301 162 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+104.197.69.115 - - [13/Nov/2025:22:04:01 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36" "-"
+205.169.39.243 - - [13/Nov/2025:22:04:09 +0000] "GET / HTTP/1.1" 301 162 "-" "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36"
+205.169.39.243 - - [13/Nov/2025:22:04:13 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:22:05:06 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:22:05:12 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:22:05:13 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:22:05:17 +0000] "GET / HTTP/1.1" 301 162 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+128.187.116.1 - - [13/Nov/2025:22:05:17 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+152.39.201.55 - - [13/Nov/2025:22:05:18 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/138.0.7204.156 Mobile/15E148 Safari/604.1" "-"
+216.194.82.207 - - [13/Nov/2025:22:05:29 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/138.0.7204.156 Mobile/15E148 Safari/604.1" "-"
+3.218.164.168 - - [13/Nov/2025:22:07:05 +0000] "GET / HTTP/1.1" 301 162 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44"
+3.218.164.168 - - [13/Nov/2025:22:07:05 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44" "-"
+98.94.48.139 - - [13/Nov/2025:22:07:05 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "-" "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0" "-"
+13.221.174.151 - - [13/Nov/2025:22:07:05 +0000] "GET / HTTP/1.1" 301 162 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148"
+13.221.174.151 - - [13/Nov/2025:22:07:06 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148" "-"
+98.94.48.139 - - [13/Nov/2025:22:07:06 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "-" "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0" "-"
+52.3.234.128 - - [13/Nov/2025:22:07:37 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44" "-"
+13.223.205.232 - - [13/Nov/2025:22:07:37 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "-" "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0" "-"
+13.219.221.177 - - [13/Nov/2025:22:07:37 +0000] "GET / HTTP/1.1" 500 148 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148" "-"
+54.84.146.228 - - [13/Nov/2025:22:07:37 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "-" "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0" "-"
+128.187.116.1 - - [13/Nov/2025:22:11:58 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:22:11:58 +0000] "GET /style.css HTTP/1.1" 200 767 "https://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:22:11:58 +0000] "GET /app.js HTTP/1.1" 200 20600 "https://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:22:11:59 +0000] "GET /images/hero-background.jpg HTTP/1.1" 200 190646 "https://aquatrack.is404.net/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:22:11:59 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "https://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" "-"
+128.187.116.1 - - [13/Nov/2025:22:12:13 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0" "-"
+128.187.116.1 - - [13/Nov/2025:22:12:13 +0000] "GET /style.css HTTP/1.1" 200 767 "https://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0" "-"
+128.187.116.1 - - [13/Nov/2025:22:12:13 +0000] "GET /app.js HTTP/1.1" 200 20600 "https://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0" "-"
+128.187.116.1 - - [13/Nov/2025:22:12:14 +0000] "GET /images/hero-background.jpg HTTP/1.1" 200 190646 "https://aquatrack.is404.net/style.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0" "-"
+128.187.116.1 - - [13/Nov/2025:22:12:14 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "https://aquatrack.is404.net/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0" "-"
+128.192.12.116 - - [13/Nov/2025:22:12:17 +0000] "GET / HTTP/1.1" 200 13978 "-" "Mozilla/5.0 (compatible; UGAResearchAgent/1.0; Please visit: NISLabUGA.github.io)" "-"
 
 
 ----------------------------------------
@@ -273,4 +172,285 @@ nginx: configuration file /var/proxy/staging/nginx/nginx.conf test is successful
 2025/11/13 20:05:53 [warn] 7038#7038: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
 2025/11/13 20:05:54 [warn] 7088#7088: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
 2025/11/13 20:05:54 [warn] 7089#7089: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 20:06:57 [warn] 7093#7093: *9 using uninitialized "year" variable while logging request, client: 216.180.246.69, server: , request: "�î��êmaRæMyå²‹¼›z#¨¿wç0-W åQø ç§s±S‚ó¤§Ç¹CìËƒðÿ¬?yŸû.Ù„Å©ÄM�&Ì¨Ì©À/À0À+À,ÀÀ	ÀÀ"
+2025/11/13 20:06:57 [warn] 7093#7093: *9 using uninitialized "month" variable while logging request, client: 216.180.246.69, server: , request: "�î��êmaRæMyå²‹¼›z#¨¿wç0-W åQø ç§s±S‚ó¤§Ç¹CìËƒðÿ¬?yŸû.Ù„Å©ÄM�&Ì¨Ì©À/À0À+À,ÀÀ	ÀÀ"
+2025/11/13 20:06:57 [warn] 7093#7093: *9 using uninitialized "day" variable while logging request, client: 216.180.246.69, server: , request: "�î��êmaRæMyå²‹¼›z#¨¿wç0-W åQø ç§s±S‚ó¤§Ç¹CìËƒðÿ¬?yŸû.Ù„Å©ÄM�&Ì¨Ì©À/À0À+À,ÀÀ	ÀÀ"
+2025/11/13 20:06:57 [warn] 7093#7093: *9 using uninitialized "hour" variable while logging request, client: 216.180.246.69, server: , request: "�î��êmaRæMyå²‹¼›z#¨¿wç0-W åQø ç§s±S‚ó¤§Ç¹CìËƒðÿ¬?yŸû.Ù„Å©ÄM�&Ì¨Ì©À/À0À+À,ÀÀ	ÀÀ"
+2025/11/13 20:16:24 [warn] 7093#7093: *14 using uninitialized "year" variable while logging request, client: 216.180.246.69, server: , request: "�ú��ö¡|œCúDX<‘sâ—ì‚/(Ý½R½þÀ7ýÙ/Zß Åö”Øž*Xòj3…„š2Ð\‘v±U‘hþÈn-‚ �2À/À+ÀÀÀÀ	ÀÀ"
+2025/11/13 20:16:24 [warn] 7093#7093: *14 using uninitialized "month" variable while logging request, client: 216.180.246.69, server: , request: "�ú��ö¡|œCúDX<‘sâ—ì‚/(Ý½R½þÀ7ýÙ/Zß Åö”Øž*Xòj3…„š2Ð\‘v±U‘hþÈn-‚ �2À/À+ÀÀÀÀ	ÀÀ"
+2025/11/13 20:16:24 [warn] 7093#7093: *14 using uninitialized "day" variable while logging request, client: 216.180.246.69, server: , request: "�ú��ö¡|œCúDX<‘sâ—ì‚/(Ý½R½þÀ7ýÙ/Zß Åö”Øž*Xòj3…„š2Ð\‘v±U‘hþÈn-‚ �2À/À+ÀÀÀÀ	ÀÀ"
+2025/11/13 20:16:24 [warn] 7093#7093: *14 using uninitialized "hour" variable while logging request, client: 216.180.246.69, server: , request: "�ú��ö¡|œCúDX<‘sâ—ì‚/(Ý½R½þÀ7ýÙ/Zß Åö”Øž*Xòj3…„š2Ð\‘v±U‘hþÈn-‚ �2À/À+ÀÀÀÀ	ÀÀ"
+2025/11/13 20:23:47 [warn] 7093#7093: *17 using uninitialized "year" variable while logging request, client: 130.185.118.124, server: , request: "POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1"
+2025/11/13 20:23:47 [warn] 7093#7093: *17 using uninitialized "month" variable while logging request, client: 130.185.118.124, server: , request: "POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1"
+2025/11/13 20:23:47 [warn] 7093#7093: *17 using uninitialized "day" variable while logging request, client: 130.185.118.124, server: , request: "POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1"
+2025/11/13 20:23:47 [warn] 7093#7093: *17 using uninitialized "hour" variable while logging request, client: 130.185.118.124, server: , request: "POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1"
+2025/11/13 20:23:48 [warn] 7093#7093: *18 using uninitialized "year" variable while logging request, client: 130.185.118.124, server: , request: "POST /cgi-bin/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/bin/sh HTTP/1.1"
+2025/11/13 20:23:48 [warn] 7093#7093: *18 using uninitialized "month" variable while logging request, client: 130.185.118.124, server: , request: "POST /cgi-bin/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/bin/sh HTTP/1.1"
+2025/11/13 20:23:48 [warn] 7093#7093: *18 using uninitialized "day" variable while logging request, client: 130.185.118.124, server: , request: "POST /cgi-bin/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/bin/sh HTTP/1.1"
+2025/11/13 20:23:48 [warn] 7093#7093: *18 using uninitialized "hour" variable while logging request, client: 130.185.118.124, server: , request: "POST /cgi-bin/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/bin/sh HTTP/1.1"
+2025/11/13 21:44:05 [warn] 7093#7093: *74 an upstream response is buffered to a temporary file /var/lib/nginx/tmp/proxy/1/00/0000000001 while reading upstream, client: 128.187.116.1, server: , request: "GET /images/hero-background.jpg HTTP/1.1", upstream: "http://127.0.0.1:8080/images/hero-background.jpg", host: "aquatrack.is404.net", referrer: "http://aquatrack.is404.net/style.css"
+2025/11/13 21:50:00 [warn] 11260#11260: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 21:50:01 [warn] 11309#11309: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 21:50:01 [warn] 11311#11311: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 21:57:09 [warn] 12071#12071: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 21:57:10 [warn] 12121#12121: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 21:57:10 [warn] 12122#12122: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:31 [warn] 13027#13027: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:31 [warn] 13071#13071: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:31 [warn] 13073#13073: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:32 [warn] 13104#13104: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:34 [warn] 13113#13113: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:34 [notice] 13113#13113: signal process started
+2025/11/13 22:03:34 [warn] 13079#13079: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:35 [warn] 13115#13115: *1 using uninitialized "year" variable while logging request, client: 23.178.112.105, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *1 using uninitialized "month" variable while logging request, client: 23.178.112.105, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *1 using uninitialized "day" variable while logging request, client: 23.178.112.105, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *1 using uninitialized "hour" variable while logging request, client: 23.178.112.105, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13114#13114: *2 using uninitialized "year" variable while logging request, client: 3.16.188.23, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13114#13114: *2 using uninitialized "month" variable while logging request, client: 3.16.188.23, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13114#13114: *2 using uninitialized "day" variable while logging request, client: 3.16.188.23, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13114#13114: *2 using uninitialized "hour" variable while logging request, client: 3.16.188.23, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *3 using uninitialized "year" variable while logging request, client: 44.252.5.162, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *3 using uninitialized "month" variable while logging request, client: 44.252.5.162, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *3 using uninitialized "day" variable while logging request, client: 44.252.5.162, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *3 using uninitialized "hour" variable while logging request, client: 44.252.5.162, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *4 using uninitialized "year" variable while logging request, client: 13.48.128.4, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *4 using uninitialized "month" variable while logging request, client: 13.48.128.4, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *4 using uninitialized "day" variable while logging request, client: 13.48.128.4, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:35 [warn] 13115#13115: *4 using uninitialized "hour" variable while logging request, client: 13.48.128.4, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:36 [warn] 13115#13115: *5 using uninitialized "year" variable while logging request, client: 47.129.65.102, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:36 [warn] 13115#13115: *5 using uninitialized "month" variable while logging request, client: 47.129.65.102, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:36 [warn] 13115#13115: *5 using uninitialized "day" variable while logging request, client: 47.129.65.102, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:36 [warn] 13115#13115: *5 using uninitialized "hour" variable while logging request, client: 47.129.65.102, server: aquatrack.is404.net, request: "GET /.well-known/acme-challenge/xI1_Ur8U0rve9K-qLlaM_g1BIqpLQA7aIIed7N-I-RE HTTP/1.1", host: "aquatrack.is404.net"
+2025/11/13 22:03:39 [warn] 13120#13120: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:39 [notice] 13120#13120: signal process started
+2025/11/13 22:03:39 [warn] 13079#13079: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:42 [warn] 13123#13123: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:42 [notice] 13123#13123: signal process started
+2025/11/13 22:03:42 [warn] 13079#13079: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:43 [warn] 13126#13126: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:03:43 [notice] 13126#13126: signal process started
+2025/11/13 22:03:43 [warn] 13079#13079: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:11:04 [warn] 13951#13951: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:11:05 [warn] 14002#14002: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:11:05 [warn] 14003#14003: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:11:06 [warn] 14027#14027: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:11:07 [warn] 14039#14039: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:11:07 [notice] 14039#14039: signal process started
+2025/11/13 22:11:07 [warn] 14004#14004: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:11:08 [warn] 14046#14046: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:11:08 [notice] 14046#14046: signal process started
+2025/11/13 22:11:08 [warn] 14004#14004: could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+2025/11/13 22:11:58 [warn] 14047#14047: *3 an upstream response is buffered to a temporary file /var/lib/nginx/tmp/proxy/1/00/0000000001 while reading upstream, client: 128.187.116.1, server: aquatrack.is404.net, request: "GET /images/hero-background.jpg HTTP/1.1", upstream: "http://127.0.0.1:8080/images/hero-background.jpg", host: "aquatrack.is404.net", referrer: "https://aquatrack.is404.net/style.css"
+2025/11/13 22:12:13 [warn] 14047#14047: *12 an upstream response is buffered to a temporary file /var/lib/nginx/tmp/proxy/2/00/0000000002 while reading upstream, client: 128.187.116.1, server: aquatrack.is404.net, request: "GET /images/hero-background.jpg HTTP/1.1", upstream: "http://127.0.0.1:8080/images/hero-background.jpg", host: "aquatrack.is404.net", referrer: "https://aquatrack.is404.net/style.css"
+
+
+----------------------------------------
+/var/log/web.stdout.log
+----------------------------------------
+Nov 13 22:05:13 ip-172-31-95-201 web[13070]:    at Route.dispatch (/var/app/current/node_modules/router/lib/route.js:117:3)
+Nov 13 22:05:13 ip-172-31-95-201 web[13070]:    at handle (/var/app/current/node_modules/router/index.js:435:11)
+Nov 13 22:05:13 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:05:13 ip-172-31-95-201 web[13070]:    at /var/app/current/node_modules/router/index.js:295:15
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]: Error: No default engine was specified and no extension was provided.
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at new View (/var/app/current/node_modules/express/lib/view.js:61:11)
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at Function.render (/var/app/current/node_modules/express/lib/application.js:552:12)
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at ServerResponse.render (/var/app/current/node_modules/express/lib/response.js:909:7)
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at /var/app/current/server.js:53:9
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at next (/var/app/current/node_modules/router/lib/route.js:157:13)
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at Route.dispatch (/var/app/current/node_modules/router/lib/route.js:117:3)
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at handle (/var/app/current/node_modules/router/index.js:435:11)
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:05:17 ip-172-31-95-201 web[13070]:    at /var/app/current/node_modules/router/index.js:295:15
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]: Error: No default engine was specified and no extension was provided.
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at new View (/var/app/current/node_modules/express/lib/view.js:61:11)
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at Function.render (/var/app/current/node_modules/express/lib/application.js:552:12)
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at ServerResponse.render (/var/app/current/node_modules/express/lib/response.js:909:7)
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at /var/app/current/server.js:53:9
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at next (/var/app/current/node_modules/router/lib/route.js:157:13)
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at Route.dispatch (/var/app/current/node_modules/router/lib/route.js:117:3)
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at handle (/var/app/current/node_modules/router/index.js:435:11)
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:05:18 ip-172-31-95-201 web[13070]:    at /var/app/current/node_modules/router/index.js:295:15
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]: Error: No default engine was specified and no extension was provided.
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at new View (/var/app/current/node_modules/express/lib/view.js:61:11)
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at Function.render (/var/app/current/node_modules/express/lib/application.js:552:12)
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at ServerResponse.render (/var/app/current/node_modules/express/lib/response.js:909:7)
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at /var/app/current/server.js:53:9
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at next (/var/app/current/node_modules/router/lib/route.js:157:13)
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at Route.dispatch (/var/app/current/node_modules/router/lib/route.js:117:3)
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at handle (/var/app/current/node_modules/router/index.js:435:11)
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:05:29 ip-172-31-95-201 web[13070]:    at /var/app/current/node_modules/router/index.js:295:15
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]: Error: No default engine was specified and no extension was provided.
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at new View (/var/app/current/node_modules/express/lib/view.js:61:11)
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at Function.render (/var/app/current/node_modules/express/lib/application.js:552:12)
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at ServerResponse.render (/var/app/current/node_modules/express/lib/response.js:909:7)
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at /var/app/current/server.js:53:9
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at next (/var/app/current/node_modules/router/lib/route.js:157:13)
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at Route.dispatch (/var/app/current/node_modules/router/lib/route.js:117:3)
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at handle (/var/app/current/node_modules/router/index.js:435:11)
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:07:05 ip-172-31-95-201 web[13070]:    at /var/app/current/node_modules/router/index.js:295:15
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]: Error: No default engine was specified and no extension was provided.
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at new View (/var/app/current/node_modules/express/lib/view.js:61:11)
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at Function.render (/var/app/current/node_modules/express/lib/application.js:552:12)
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at ServerResponse.render (/var/app/current/node_modules/express/lib/response.js:909:7)
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at /var/app/current/server.js:53:9
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at next (/var/app/current/node_modules/router/lib/route.js:157:13)
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at Route.dispatch (/var/app/current/node_modules/router/lib/route.js:117:3)
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at handle (/var/app/current/node_modules/router/index.js:435:11)
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:07:06 ip-172-31-95-201 web[13070]:    at /var/app/current/node_modules/router/index.js:295:15
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]: Error: No default engine was specified and no extension was provided.
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at new View (/var/app/current/node_modules/express/lib/view.js:61:11)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at Function.render (/var/app/current/node_modules/express/lib/application.js:552:12)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at ServerResponse.render (/var/app/current/node_modules/express/lib/response.js:909:7)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at /var/app/current/server.js:53:9
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at next (/var/app/current/node_modules/router/lib/route.js:157:13)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at Route.dispatch (/var/app/current/node_modules/router/lib/route.js:117:3)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at handle (/var/app/current/node_modules/router/index.js:435:11)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at /var/app/current/node_modules/router/index.js:295:15
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]: Error: No default engine was specified and no extension was provided.
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at new View (/var/app/current/node_modules/express/lib/view.js:61:11)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at Function.render (/var/app/current/node_modules/express/lib/application.js:552:12)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at ServerResponse.render (/var/app/current/node_modules/express/lib/response.js:909:7)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at /var/app/current/server.js:53:9
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at next (/var/app/current/node_modules/router/lib/route.js:157:13)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at Route.dispatch (/var/app/current/node_modules/router/lib/route.js:117:3)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at handle (/var/app/current/node_modules/router/index.js:435:11)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at Layer.handleRequest (/var/app/current/node_modules/router/lib/layer.js:152:17)
+Nov 13 22:07:37 ip-172-31-95-201 web[13070]:    at /var/app/current/node_modules/router/index.js:295:15
+Nov 13 22:11:05 ip-172-31-95-201 web[13947]: > aquatrack@1.0.0 start
+Nov 13 22:11:05 ip-172-31-95-201 web[13947]: > npm install && node server.js
+Nov 13 22:11:07 ip-172-31-95-201 web[13991]: up to date, audited 128 packages in 2s
+Nov 13 22:11:07 ip-172-31-95-201 web[13991]: 20 packages are looking for funding
+Nov 13 22:11:07 ip-172-31-95-201 web[13991]:  run `npm fund` for details
+Nov 13 22:11:07 ip-172-31-95-201 web[13991]: found 0 vulnerabilities
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]: [dotenv@17.2.3] injecting env (0) from .env -- tip: ðŸ” encrypt with Dotenvx: https://dotenvx.com
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]: Website is running!
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]: Server listening at http://localhost:8080
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]: Error connecting to the database: error: no pg_hba.conf entry for host "172.31.95.201", user "postgres", database "aquatrack", no encryption
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]:    at Parser.parseErrorMessage (/var/app/current/node_modules/pg-protocol/dist/parser.js:285:98)
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]:    at Parser.handlePacket (/var/app/current/node_modules/pg-protocol/dist/parser.js:122:29)
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]:    at Parser.parse (/var/app/current/node_modules/pg-protocol/dist/parser.js:35:38)
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]:    at Socket.<anonymous> (/var/app/current/node_modules/pg-protocol/dist/index.js:11:42)
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]:    at Socket.emit (node:events:519:28)
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]:    at addChunk (node:internal/streams/readable:561:12)
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]:    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]:    at Readable.push (node:internal/streams/readable:392:5)
+Nov 13 22:11:07 ip-172-31-95-201 web[13989]:    at TCP.onStreamRead (node:internal/stream_base_commons:189:23)
+
+
+----------------------------------------
+/var/log/eb-engine.log
+----------------------------------------
+2025/11/13 22:11:02.965947 [INFO] Executing instruction: FlipApplication
+2025/11/13 22:11:02.965971 [INFO] Fetching environment variables...
+2025/11/13 22:11:02.965995 [INFO] setting default port 8080 to application
+2025/11/13 22:11:02.966338 [INFO] Purge old process...
+2025/11/13 22:11:02.966361 [INFO] Running command: systemctl stop eb-app.target
+2025/11/13 22:11:02.977197 [INFO] Running command: systemctl show -p ConsistsOf eb-app.target | cut -d= -f2
+2025/11/13 22:11:03.025394 [INFO] web.service
+
+2025/11/13 22:11:03.025414 [INFO] deregistering process: web
+2025/11/13 22:11:03.025426 [INFO] Running command: systemctl show -p PartOf web.service
+2025/11/13 22:11:03.067878 [INFO] Running command: systemctl is-active web.service
+2025/11/13 22:11:03.076123 [INFO] Running command: systemctl disable web.service
+2025/11/13 22:11:03.371036 [INFO] Removed "/etc/systemd/system/multi-user.target.wants/web.service".
+
+2025/11/13 22:11:03.371117 [INFO] Running command: systemctl daemon-reload
+2025/11/13 22:11:03.634568 [INFO] Running command: systemctl reset-failed
+2025/11/13 22:11:03.642946 [INFO] Running command: systemctl is-active web.service
+2025/11/13 22:11:03.650707 [INFO] Process web has been fully terminated
+2025/11/13 22:11:03.650730 [INFO] All processes have been fully terminated
+2025/11/13 22:11:03.650734 [INFO] Removing /var/app/current/ if it exists
+2025/11/13 22:11:03.716082 [INFO] Renaming /var/app/staging/ to /var/app/current/
+2025/11/13 22:11:03.716114 [INFO] Register application processes...
+2025/11/13 22:11:03.716118 [INFO] Registering the proc: web
+
+2025/11/13 22:11:03.716136 [INFO] Running command: systemctl show -p PartOf web.service
+2025/11/13 22:11:03.735683 [INFO] Running command: systemctl daemon-reload
+2025/11/13 22:11:03.972500 [INFO] Running command: systemctl reset-failed
+2025/11/13 22:11:03.981187 [INFO] Running command: systemctl is-enabled eb-app.target
+2025/11/13 22:11:03.988995 [INFO] Running command: systemctl enable eb-app.target
+2025/11/13 22:11:04.270838 [INFO] Running command: systemctl start eb-app.target
+2025/11/13 22:11:04.285801 [INFO] Running command: systemctl enable web.service
+2025/11/13 22:11:04.584727 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/web.service â†’ /etc/systemd/system/web.service.
+
+2025/11/13 22:11:04.584765 [INFO] Running command: systemctl show -p PartOf web.service
+2025/11/13 22:11:04.629046 [INFO] Running command: systemctl is-active web.service
+2025/11/13 22:11:04.667137 [INFO] Running command: systemctl start web.service
+2025/11/13 22:11:04.817219 [INFO] Executing instruction: start X-Ray
+2025/11/13 22:11:04.817242 [INFO] X-Ray is not enabled.
+2025/11/13 22:11:04.817246 [INFO] Executing instruction: start proxy with new configuration
+2025/11/13 22:11:04.817282 [INFO] Running command: /usr/sbin/nginx -t -c /var/proxy/staging/nginx/nginx.conf
+2025/11/13 22:11:04.851336 [INFO] nginx: [warn] could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+nginx: the configuration file /var/proxy/staging/nginx/nginx.conf syntax is ok
+nginx: configuration file /var/proxy/staging/nginx/nginx.conf test is successful
+
+2025/11/13 22:11:04.851571 [INFO] Running command: cp -rp /var/proxy/staging/nginx/* /etc/nginx
+2025/11/13 22:11:04.856050 [INFO] Running command: systemctl show -p PartOf nginx.service
+2025/11/13 22:11:04.876534 [INFO] Running command: systemctl daemon-reload
+2025/11/13 22:11:05.302203 [INFO] Running command: systemctl reset-failed
+2025/11/13 22:11:05.317076 [INFO] Running command: systemctl show -p PartOf nginx.service
+2025/11/13 22:11:05.337680 [INFO] Running command: systemctl is-active nginx.service
+2025/11/13 22:11:05.351787 [INFO] Running command: systemctl start nginx.service
+2025/11/13 22:11:05.489021 [INFO] Executing instruction: configureSqsd
+2025/11/13 22:11:05.489044 [INFO] This is a web server environment instance, skip configure sqsd daemon ...
+2025/11/13 22:11:05.489048 [INFO] Executing instruction: startSqsd
+2025/11/13 22:11:05.489051 [INFO] This is a web server environment instance, skip start sqsd daemon ...
+2025/11/13 22:11:05.489055 [INFO] Executing instruction: Track pids in healthd
+2025/11/13 22:11:05.489059 [INFO] This is an enhanced health env...
+2025/11/13 22:11:05.489072 [INFO] Running command: systemctl show -p ConsistsOf aws-eb.target | cut -d= -f2
+2025/11/13 22:11:05.504120 [INFO] nginx.service cfn-hup.service healthd.service
+
+2025/11/13 22:11:05.504155 [INFO] Running command: systemctl show -p ConsistsOf eb-app.target | cut -d= -f2
+2025/11/13 22:11:05.520369 [INFO] web.service
+
+2025/11/13 22:11:05.520721 [INFO] Executing instruction: RunAppDeployPostDeployHooks
+2025/11/13 22:11:05.520785 [INFO] Executing platform hooks in .platform/hooks/postdeploy/
+2025/11/13 22:11:05.520854 [INFO] Following scripts will be executed in order: [00_get_certificate.sh]
+2025/11/13 22:11:05.520861 [INFO] Try add execution permission
+2025/11/13 22:11:05.520869 [INFO] Adding execute mode to file, original mode is 420
+2025/11/13 22:11:05.520891 [INFO] Running command: file -b /var/app/current/.platform/hooks/postdeploy/00_get_certificate.sh
+2025/11/13 22:11:05.526250 [INFO] Bourne-Again shell script, ASCII text executable, with CRLF line terminators
+
+2025/11/13 22:11:05.526270 [INFO] Hook file /var/app/current/.platform/hooks/postdeploy/00_get_certificate.sh is a text script with CRLF line endings. Converting to Unix format
+2025/11/13 22:11:05.526281 [INFO] Running command: dos2unix -s /var/app/current/.platform/hooks/postdeploy/00_get_certificate.sh
+2025/11/13 22:11:05.529197 [INFO] dos2unix: converting file /var/app/current/.platform/hooks/postdeploy/00_get_certificate.sh to Unix format...
+
+2025/11/13 22:11:05.529210 [INFO] Running script: .platform/hooks/postdeploy/00_get_certificate.sh
+2025/11/13 22:11:09.895528 [INFO] Finished running scripts in /var/app/current/.platform/hooks/postdeploy
+2025/11/13 22:11:09.895539 [INFO] Executing cleanup logic
+2025/11/13 22:11:09.895655 [INFO] CommandService Response: {"status":"SUCCESS","api_version":"1.0","results":[{"status":"SUCCESS","msg":"Engine execution has succeeded.","returncode":0,"events":[{"msg":"Instance deployment completed successfully.","timestamp":1763071869895,"severity":"INFO"}]}]}
+
+2025/11/13 22:11:09.895852 [INFO] Platform Engine finished execution on command: app-deploy
+
+2025/11/13 22:12:24.401848 [INFO] Starting...
+2025/11/13 22:12:24.401905 [INFO] Starting EBPlatform-PlatformEngine
+2025/11/13 22:12:24.401929 [INFO] reading event message file
+2025/11/13 22:12:24.402287 [INFO] Engine received EB command cfn-hup-exec
+
+2025/11/13 22:12:24.479880 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-east-1:154231848556:stack/awseb-e-tifh2fhr2i-stack/8935de50-c0c3-11f0-a2c4-120567f4b1f1 -r AWSEBAutoScalingGroup --region us-east-1
+2025/11/13 22:12:24.784770 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:us-east-1:154231848556:stack/awseb-e-tifh2fhr2i-stack/8935de50-c0c3-11f0-a2c4-120567f4b1f1 -r AWSEBBeanstalkMetadata --region us-east-1
+2025/11/13 22:12:25.084421 [INFO] checking whether command tail-log is applicable to this instance...
+2025/11/13 22:12:25.084435 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/11/13 22:12:25.084439 [INFO] Engine command: (tail-log)
+
+2025/11/13 22:12:25.084504 [INFO] Executing instruction: GetTailLogs
+2025/11/13 22:12:25.084507 [INFO] Tail Logs...
+2025/11/13 22:12:25.084963 [INFO] Running command: tail -n 100 /var/log/eb-hooks.log
+2025/11/13 22:12:25.087362 [INFO] Running command: tail -n 100 /var/log/nginx/access.log
+2025/11/13 22:12:25.090070 [INFO] Running command: tail -n 100 /var/log/nginx/error.log
+2025/11/13 22:12:25.091952 [INFO] Running command: tail -n 100 /var/log/web.stdout.log
+2025/11/13 22:12:25.094491 [INFO] Running command: tail -n 100 /var/log/eb-engine.log
 

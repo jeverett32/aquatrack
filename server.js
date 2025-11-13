@@ -22,7 +22,7 @@ const knex = require('knex')({
         password: process.env.RDS_PASSWORD || "SuperSecretPassword",
         database: process.env.RDS_DATABASE || "aquatrack",
         port: process.env.RDS_PORT || 5433,
-        ssl: process.env.RDS_SSL ? {rejectUnauthorized: false} : false
+        ssl: { rejectUnauthorized: false }
     }
 });
 
