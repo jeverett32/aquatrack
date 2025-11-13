@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const { Pool } = require('pg');
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -11,33 +11,16 @@ app.listen(port, () => console.log("Website is running!"));
 const saltRounds = 10; // for bcrypt
 
 // Create a new PostgreSQL connection pool
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
-
-// Set EJS as the view engine
-app.set('view engine', 'ejs');
-// Tell Express where to find the EJS files (in the 'views' folder)
-app.set('views', path.join(__dirname, 'views'));
-
-// Middleware to parse JSON and URL-encoded bodies
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 const knex = require('knex')({
     client: 'pg',
     connection: {
-        host: process.env.RDS_HOSTNAME,
-        user: process.env.RDS_USERNAME,
-        password: process.env.RDS_PASSWORD,
-        database: process.env.RDS_DB_NAME,
-        port: process.env.RDS_PORT,
-    },
-    pool: { min: 0, max: 7 },
+        host: process.env.DB_HOST || "localhost",
+        user: process.env.DB_USER || "postgres",
+        password: process.env.DB_PASSWORD || "SuperSecretPassword",
+        database: process.env.DB_DATABASE || "aquatrack",
+        port: process.env.DB_PORT || 5432,
+        ssl: process.env.DB_SSL ? {rejectUnauthorized: false} : false
+    }
 });
 
 // --- Authentication Middleware ---
@@ -86,7 +69,7 @@ app.get('/api/projects', async (req, res) => {
             FROM Well_Projects p
             LEFT JOIN Partners pr ON p.PartnerID = pr.PartnerID;
         `;
-        const result = await pool.query(query);
+        const result = await knex.raw(query);
         res.json(result.rows);
     } catch (err) {
         console.error('Error fetching projects:', err);
@@ -109,7 +92,7 @@ app.post('/api/projects', authenticateToken, isManager, async (req, res) => {
             RETURNING *;
         `;
         const values = [partnerId, projectTitle, projectLatitude, projectLongitude];
-        const result = await pool.query(query, values);
+        const result = await knex.raw(query, values);
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error('Error creating project:', err);
@@ -134,7 +117,7 @@ app.put('/api/projects/:id', authenticateToken, isManager, async (req, res) => {
             RETURNING *;
         `;
         const values = [partnerId, projectTitle, projectLatitude, projectLongitude, projectId];
-        const result = await pool.query(query, values);
+        const result = await knex.raw(query, values);
 
         if (result.rowCount === 0) {
             return res.status(404).json({ message: 'Project not found.' });
@@ -152,7 +135,7 @@ app.delete('/api/projects/:id', authenticateToken, isManager, async (req, res) =
     const projectId = req.params.id;
 
     try {
-        const result = await pool.query('DELETE FROM Well_Projects WHERE ProjectID = $1 RETURNING *;', [projectId]);
+        const result = await knex('Well_Projects').where('ProjectID', projectId).del().returning('*');
 
         if (result.rowCount === 0) {
             return res.status(404).json({ message: 'Project not found.' });
@@ -176,7 +159,7 @@ app.get('/api/users/saved-projects', authenticateToken, async (req, res) => {
             JOIN Saved_Projects sp ON p.ProjectID = sp.ProjectID
             WHERE sp.UserID = $1;
         `;
-        const result = await pool.query(query, [userId]);
+        const result = await knex.raw(query, [userId]);
         res.json(result.rows);
     } catch (err) {
         console.error('Error fetching saved projects:', err);
@@ -190,7 +173,7 @@ app.post('/api/users/saved-projects', authenticateToken, async (req, res) => {
     const { projectId } = req.body;
     try {
         const query = 'INSERT INTO Saved_Projects (UserID, ProjectID) VALUES ($1, $2) RETURNING *;';
-        const result = await pool.query(query, [userId, projectId]);
+        const result = await knex.raw(query, [userId, projectId]);
         res.status(201).json(result.rows[0]);
     } catch (err) {
         if (err.code === '23505') { // Unique violation
@@ -207,7 +190,7 @@ app.delete('/api/users/saved-projects/:projectId', authenticateToken, async (req
     const { projectId } = req.params;
     try {
         const query = 'DELETE FROM Saved_Projects WHERE UserID = $1 AND ProjectID = $2 RETURNING *;';
-        const result = await pool.query(query, [userId, projectId]);
+        const result = await knex.raw(query, [userId, projectId]);
         if (result.rowCount === 0) {
             return res.status(404).json({ message: 'Saved project not found.' });
         }
@@ -236,7 +219,7 @@ app.post('/api/register', async (req, res) => {
         `;
         const values = [userEmail, userFirstName, userLastName, hashedPassword];
         
-        const result = await pool.query(newUserQuery, values);
+        const result = await knex.raw(newUserQuery, values);
         res.status(201).json({ message: 'User registered successfully!', user: result.rows[0] });
 
     } catch (err) {
@@ -258,7 +241,7 @@ app.post('/api/login', async (req, res) => {
 
     try {
         const userQuery = 'SELECT * FROM Users WHERE UserEmail = $1';
-        const result = await pool.query(userQuery, [userEmail]);
+        const result = await knex.raw(userQuery, [userEmail]);
         const user = result.rows[0];
 
         if (!user) {
@@ -293,9 +276,8 @@ app.listen(port, async () => {
     console.log(`Server listening at http://localhost:${port}`);
     // Test the database connection
     try {
-        const client = await pool.connect();
+        await knex.raw('select 1+1 as result');
         console.log('Database connected successfully!');
-        client.release();
     } catch (err) {
         console.error('Error connecting to the database:', err.stack);
     }

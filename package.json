@@ -4,7 +4,7 @@
   "description": "A website featuring an interactive map for tracking potential water well locations and projects in underdeveloped countries",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm install && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
