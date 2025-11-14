@@ -47,6 +47,33 @@ Once the Gemini CLI is installed, you can begin your work on the project.
 3.  Use natural language to instruct the agent on what you want to do. The agent will use its tools to help you write code, test features, and complete your portion of the assignment.
 4.  Refer to the `GEMINI.md` file in the project context for a detailed breakdown of all roles and tasks.
 
+#### Git Workflow
+
+To ensure a smooth collaborative development process, please follow these Git guidelines:
+
+1.  **Create a New Branch:** Before starting any new task or feature, always create a new branch from the `main` branch. Use a descriptive name for your branch (e.g., `feature/user-login`, `bugfix/map-marker-issue`).
+
+    ```bash
+    git checkout main
+    git pull origin main
+    git checkout -b your-branch-name
+    ```
+
+2.  **Commit Your Changes:** Make regular, small, and descriptive commits as you work.
+
+    ```bash
+    git add .
+    git commit -m "feat: Add user login functionality"
+    ```
+
+3.  **Push Your Branch:** Once you've completed your task or reached a logical stopping point, push your branch to the remote repository.
+
+    ```bash
+    git push origin your-branch-name
+    ```
+
+4.  **Create a Merge Request (Pull Request):** After pushing your branch, go to your Git hosting service (e.g., GitHub, GitLab, Bitbucket) and create a merge request (or pull request) from your branch into the `main` branch. Provide a clear description of your changes and any relevant context.
+
 ## Team Roles & Tasks
 
 *   **John Everett (Backend & Cloud Lead):** Responsible for deploying the application and database to AWS.
