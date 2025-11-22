@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isAdmin = false;
     const ADMIN_EMAIL = "admin@example.com"; // Dummy admin email
     let markers = [];
+    let allProjects = []; // New global variable to store fetched projects
     // let dynamoDbClient; // Will not be initialized without AWS SDK
 
     // --- UI & NAVIGATION ---
@@ -173,45 +174,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // --- Dummy Data and Functions (No AWS) ---
-    let dummyProjects = [
-        { id: "proj1", title: "Kenya Water Project", lat: 0.0236, lng: 37.9062, image: "https://via.placeholder.com/300x200?text=Kenya", status: "Funding", description: "Bringing clean water to a remote village in Kenya.", contribution: "Donate to our NGO partner." },
-        { id: "proj2", title: "Uganda Borehole Initiative", lat: 1.3733, lng: 32.2903, image: "https://via.placeholder.com/300x200?text=Uganda", status: "In Progress", description: "Drilling new boreholes in rural Uganda.", contribution: "Volunteer on the ground." },
-        { id: "proj3", title: "Ethiopia Sanitation Program", lat: 9.1450, lng: 40.4897, image: "https://via.placeholder.com/300x200?text=Ethiopia", status: "Complete", description: "Completed a sanitation and water access project.", contribution: "Spread the word about our success." },
-        { id: "proj4", title: "Tanzania Well Repair", lat: -6.3690, lng: 34.8888, image: "https://via.placeholder.com/300x200?text=Tanzania", status: "Funding", description: "Repairing a broken well serving 500 people.", contribution: "Any amount helps fund the repairs." },
-        { id: "proj5", title: "Rwanda Community Tap", lat: -1.9403, lng: 29.8739, image: "https://via.placeholder.com/300x200?text=Rwanda", status: "In Progress", description: "Installing a communal tap in a growing community.", contribution: "Local volunteers needed for distribution." },
-    ];
-    let dummySavedProjects = []; // Stores IDs of projects saved by the dummy user
+    // --- Data and Functions ---
 
     async function fetchAndDisplayWells() {
-        console.log("Dummy fetchAndDisplayWells: Loading dummy data.");
         if (!map) { console.error("Map not initialized before fetching wells."); return; }
 
+        // Clear existing markers
         markers.forEach(marker => map.removeLayer(marker));
         markers = [];
-        dummyProjects.forEach(item => {
-            const lat = parseFloat(item.lat);
-            const lng = parseFloat(item.lng);
-            if (isNaN(lat) || isNaN(lng)) {
-                console.warn(`Skipping project "${item.title}" due to invalid coordinates:`, item.lat, item.lng);
-                return;
+        allProjects = []; // Clear previous projects
+
+        try {
+            const response = await fetch('/api/projects');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const marker = L.marker([lat, lng]).addTo(map);
-            marker.bindPopup(`<b>${item.title || 'Untitled'}</b><br>${item.status || 'No Status'}<br><a href="#" class="view-project-link" data-id="${item.id}">View Details</a>`);
-            markers.push(marker);
-        });
+            const projects = await response.json();
+            allProjects = projects; // Store fetched projects globally
+
+            allProjects.forEach(project => {
+                const lat = parseFloat(project.projectlatitude);
+                const lng = parseFloat(project.projectlongitude);
+
+                if (isNaN(lat) || isNaN(lng)) {
+                    console.warn(`Skipping project "${project.projectname}" due to invalid coordinates:`, project.projectlatitude, project.projectlongitude);
+                    return;
+                }
+
+                const marker = L.marker([lat, lng]).addTo(map);
+                marker.bindPopup(`<b>${project.projecttitle || 'Untitled'}</b><br>${project.projectstatus || 'No Status'}<br><a href="#" class="view-project-link" data-id="${project.projectid}">View Details</a>`);
+                markers.push(marker);
+            });
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+            showMessage("Failed to load projects. Please try again later.", true);
+        }
     }
 
     async function showProjectDetail(projectId) { 
-        console.log(`Dummy showProjectDetail: Showing details for ${projectId}`);
-        const project = dummyProjects.find(p => p.id === projectId);
+        console.log(`Showing details for project ID: ${projectId}`);
+        const project = allProjects.find(p => p.projectid === parseInt(projectId, 10));
         
         if (project) {
             let savedButtonHtml = '';
             if(currentUser){
-                const isSaved = dummySavedProjects.includes(projectId);
-                savedButtonHtml = `<button id="save-project-btn" data-id="${projectId}" class="${isSaved ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-amber-500 hover:bg-amber-600'} text-white font-bold py-2 px-4 rounded transition">
-                                        <i class="fas fa-star"></i> ${isSaved ? 'Unsave Project' : 'Save Project'}
+                // This logic will be replaced by actual saved status from backend later
+                savedButtonHtml = `<button id="save-project-btn" data-id="${projectId}" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded transition">
+                                        <i class="fas fa-star"></i> Save Project
                                     </button>`;
             }
 
@@ -226,15 +235,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const projectDetailContainer = document.getElementById('project-detail');
             projectDetailContainer.innerHTML = `
                 <div class="bg-white p-8 rounded-lg shadow-soft">
-                    <img src="${project.image || 'https://via.placeholder.com/600x400?text=Image+Not+Found'}" alt="${project.title}" class="w-full h-96 object-cover rounded-lg mb-6">
+                    <img src="${project.projectimageurl || 'https://via.placeholder.com/600x400?text=Image+Not+Found'}" alt="${project.projecttitle}" class="w-full h-96 object-cover rounded-lg mb-6">
                     <div class="flex justify-between items-start mb-4">
-                            <h2 class="text-4xl font-bold text-teal-800">${project.title || 'Untitled Project'}</h2>
-                            <span class="text-sm font-semibold px-3 py-1 rounded-full ${project.status === 'Complete' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}">${project.status || 'Unknown'}</span>
+                            <h2 class="text-4xl font-bold text-teal-800">${project.projecttitle || 'Untitled Project'}</h2>
+                            <span class="text-sm font-semibold px-3 py-1 rounded-full ${project.projectstatus === 'Complete' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}">${project.projectstatus || 'Unknown'}</span>
                     </div>
-                    <p class="text-gray-700 text-lg mb-6">${project.description || 'No description available.'}</p>
+                    <p class="text-gray-700 text-lg mb-6">${project.projectdescription || 'No description available.'}</p>
                     <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
                         <h3 class="text-2xl font-bold mb-2 text-teal-700">How to Contribute</h3>
-                        <p class="text-gray-700">${project.contribution || 'Information on contributions is not available.'}</p>
+                        <p class="text-gray-700">${project.projectcontributions || 'Information on contributions is not available.'}</p>
                     </div>
                     <div class="mt-6 flex items-center space-x-4">
                         ${savedButtonHtml}
@@ -244,43 +253,22 @@ document.addEventListener('DOMContentLoaded', () => {
             showPage('project-detail');
 
         } else {
-            showMessage("Dummy Project not found.", true);
+            showMessage("Project not found.", true);
             showPage('map-page');
         }
     }
 
     async function loadDashboard() { 
-        console.log("Dummy loadDashboard: Loading saved projects for current user.");
+        console.log("loadDashboard: Functionality not yet implemented.");
         const savedContainer = document.getElementById('saved-projects-container');
         const noSavedProjectsMsg = document.getElementById('no-saved-projects');
 
         savedContainer.innerHTML = ''; // Clear previous items
+        noSavedProjectsMsg.classList.remove('hidden');
+        noSavedProjectsMsg.textContent = "Dashboard functionality is under construction. Please log in to view saved projects (coming soon!).";
+        savedContainer.appendChild(noSavedProjectsMsg);
 
-        if (!currentUser || dummySavedProjects.length === 0) {
-            noSavedProjectsMsg.classList.remove('hidden');
-            savedContainer.appendChild(noSavedProjectsMsg);
-            return;
-        }
-
-        noSavedProjectsMsg.classList.add('hidden');
-
-        dummySavedProjects.forEach(projectId => {
-            const project = dummyProjects.find(p => p.id === projectId);
-            if (project) {
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-lg shadow-soft overflow-hidden";
-                card.innerHTML = `
-                    <img src="${project.image || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${project.title}" class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <h3 class="text-xl font-bold text-teal-800">${project.title || 'Untitled'}</h3>
-                        <p class="text-sm text-gray-500 mb-2">${project.status || 'Unknown'}</p>
-                        <p class="text-gray-700 text-sm mb-4">${(project.description || '').substring(0, 100)}...</p>
-                        <button class="view-project-link w-full bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition" data-id="${project.id}">View Details</button>
-                    </div>
-                `;
-                savedContainer.appendChild(card);
-            }
-        });
+        showMessage("Dashboard functionality is not yet implemented.", true);
     }
     
     // --- Dummy Admin Functionality ---
@@ -300,68 +288,95 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
         
-        const id = document.getElementById('project-id').value || 'proj' + (dummyProjects.length + 1);
+        const projectId = document.getElementById('project-id').value; // Will be empty for new projects
         const projectData = {
-            id: id,
-            title: document.getElementById('project-title').value,
-            lat: parseFloat(document.getElementById('project-lat').value),
-            lng: parseFloat(document.getElementById('project-lng').value),
-            image: document.getElementById('project-image').value,
-            status: document.getElementById('project-status').value,
-            description: document.getElementById('project-description').value,
-            contribution: document.getElementById('project-contribution').value,
+            projectTitle: document.getElementById('project-title').value,
+            projectLatitude: parseFloat(document.getElementById('project-lat').value),
+            projectLongitude: parseFloat(document.getElementById('project-lng').value),
+            projectImageUrl: document.getElementById('project-image').value,
+            projectStatus: document.getElementById('project-status').value,
+            projectDescription: document.getElementById('project-description').value,
+            projectContributions: document.getElementById('project-contribution').value,
         };
 
-        if (isNaN(projectData.lat) || isNaN(projectData.lng)) {
+        if (isNaN(projectData.projectLatitude) || isNaN(projectData.projectLongitude)) {
             return showMessage("Latitude and Longitude must be valid numbers.", true);
         }
 
-        const existingIndex = dummyProjects.findIndex(p => p.id === id);
-        if (existingIndex !== -1) {
-             dummyProjects[existingIndex] = projectData; // Update
-            showMessage("Dummy Project updated successfully!");
-        } else {
-             dummyProjects.push(projectData); // Add
-            showMessage("Dummy Project added successfully!");
+        const method = projectId ? 'PUT' : 'POST';
+        const url = projectId ? `/api/projects/${projectId}` : '/api/projects';
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token') // Assuming token is stored
+                },
+                body: JSON.stringify(projectData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            showMessage(`Project ${projectId ? 'updated' : 'added'} successfully: ${result.message || ''}`);
+            projectModal.classList.add('hidden');
+            fetchAndDisplayWells(); // Refresh map with new data
+            showPage('map-page');
+        } catch (error) {
+            console.error(`Error ${projectId ? 'updating' : 'adding'} project:`, error);
+            showMessage(`Failed to ${projectId ? 'update' : 'add'} project: ${error.message}`, true);
         }
-        
-        console.log("Current dummyProjects:", dummyProjects);
-        projectModal.classList.add('hidden');
-         fetchAndDisplayWells(); // Refresh map with dummy data
-        showPage('map-page');
     });
     
     async function openEditModal(projectId) {
         if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
         
-        const project = dummyProjects.find(p => p.id === projectId);
+        const project = allProjects.find(p => p.projectid === projectId);
         if (project) {
             document.getElementById('project-id').value = projectId;
-            document.getElementById('project-title').value = project.title || '';
-            document.getElementById('project-lat').value = project.lat || '';
-            document.getElementById('project-lng').value = project.lng || '';
-            document.getElementById('project-image').value = project.image || '';
-            document.getElementById('project-status').value = project.status || 'Funding';
-            document.getElementById('project-description').value = project.description || '';
-            document.getElementById('project-contribution').value = project.contribution || '';
+            document.getElementById('project-title').value = project.projecttitle || '';
+            document.getElementById('project-lat').value = project.projectlatitude || '';
+            document.getElementById('project-lng').value = project.projectlongitude || '';
+            document.getElementById('project-image').value = project.projectimageurl || '';
+            document.getElementById('project-status').value = project.projectstatus || 'Funding';
+            document.getElementById('project-description').value = project.projectdescription || '';
+            document.getElementById('project-contribution').value = project.projectcontributions || '';
             
-            modalTitle.textContent = "Edit Project (Dummy)";
+            modalTitle.textContent = "Edit Project";
             projectModal.classList.remove('hidden');
         } else {
-            showMessage("Dummy Project not found.", true);
+            showMessage("Project not found.", true);
         }
     }
     
     async function deleteProject(projectId) {
         if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
 
-        if (confirm("Are you sure you want to delete this dummy project?")) {
-            dummyProjects = dummyProjects.filter(p => p.id !== projectId);
-            dummySavedProjects = dummySavedProjects.filter(id => id !== projectId); // Remove from saved too
-            showMessage("Dummy Project deleted successfully.");
-            console.log("Current dummyProjects:", dummyProjects);
-            showPage('map-page');
-            fetchAndDisplayWells();
+        if (confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+            try {
+                const response = await fetch(`/api/projects/${projectId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token') // Assuming token is stored
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+
+                showMessage("Project deleted successfully.");
+                fetchAndDisplayWells(); // Refresh map
+                showPage('map-page');
+            } catch (error) {
+                console.error("Error deleting project:", error);
+                showMessage(`Failed to delete project: ${error.message}`, true);
+            }
         }
     }
 
@@ -373,29 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const projectId = e.target.dataset.id;
             showProjectDetail(projectId);
         }
-        // Save project button on detail page
-        if (e.target.matches('#save-project-btn')) {
-            e.preventDefault();
-            if (!currentUser) return showMessage("Please log in to save projects (dummy).", true);
 
-            const projectId = e.target.dataset.id;
-            const isCurrentlySaved = dummySavedProjects.includes(projectId);
-
-            if (isCurrentlySaved) {
-                dummySavedProjects = dummySavedProjects.filter(id => id !== projectId);
-                showMessage("Dummy Project unsaved.");
-                e.target.innerHTML = '<i class="fas fa-star"></i> Save Project';
-                e.target.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
-                e.target.classList.add('bg-amber-500', 'hover:bg-amber-600');
-            } else {
-                dummySavedProjects.push(projectId);
-                showMessage("Dummy Project saved!");
-                e.target.innerHTML = '<i class="fas fa-star"></i> Unsave Project';
-                e.target.classList.remove('bg-amber-500', 'hover:bg-amber-600');
-                e.target.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
-            }
-            console.log("Dummy Saved Projects:", dummySavedProjects);
-        }
         // Admin buttons on detail page
         if (e.target.matches('#edit-project-detail-btn')) {
             openEditModal(e.target.dataset.id);

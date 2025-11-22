@@ -21,8 +21,7 @@ const knex = require('knex')({
         user: process.env.RDS_USERNAME || "postgres",
         password: process.env.RDS_PASSWORD || "SuperSecretPassword",
         database: process.env.RDS_DATABASE || "aquatrack",
-        port: process.env.RDS_PORT || 5433,
-        ssl: { rejectUnauthorized: false }
+        port: process.env.RDS_PORT || 5433
     }
 });
 
@@ -65,6 +64,7 @@ app.get('/api/projects', async (req, res) => {
             SELECT
                 p.ProjectID,
                 p.ProjectTitle,
+                p.ProjectStatus,
                 p.ProjectLatitude,
                 p.ProjectLongitude,
                 pr.PartnerName,
