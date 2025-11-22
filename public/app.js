@@ -99,48 +99,83 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchAndDisplayWells(); 
     }
     
-    // --- Dummy Authentication Functions (No AWS) ---
+    // --- Authentication & Session Management ---
     function checkSession() {
-        console.log("Dummy checkSession: No AWS setup, assuming logged out.");
-        updateUIForLoggedOutUser();
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Here you might want to decode the token to get user info, but for now, we'll just use the presence of a token
+            // For simplicity, we assume a token means a valid, non-admin user.
+            // A more robust solution would be to verify the token with the server or decode it on the client.
+            const user = { name: 'User', email: '' }; // Dummy user object
+            updateUIForLoggedInUser(user);
+        } else {
+            updateUIForLoggedOutUser();
+        }
     }
-    
-    document.getElementById('register-form').addEventListener('submit', (e) => {
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = document.getElementById('register-name').value;
-        const email = document.getElementById('register-email').value;
+        const userFirstName = document.getElementById('register-name').value;
+        const userLastName = 'user';
+        const userEmail = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
-        console.log(`Dummy Register: Name: ${name}, Email: ${email}, Password: ${password}`);
-        showMessage("Dummy Registration: Functionality disabled without AWS.", true);
-        showPage('login');
+
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userEmail, userFirstName, userLastName, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showMessage(result.message || "Registration successful! Please log in.");
+                showPage('login');
+            } else {
+                throw new Error(result.message || "Registration failed.");
+            }
+        } catch (error) {
+            console.error("Registration error:", error);
+            showMessage(error.message, true);
+        }
     });
 
-    document.getElementById('login-form').addEventListener('submit', (e) => {
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('login-email').value;
+        const userEmail = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
-        console.log(`Dummy Login: Email: ${email}, Password: ${password}`);
 
-        if (email === ADMIN_EMAIL && password === "password") { // Simple dummy admin login
-            currentUser = { id: "dummy-admin-id", email: ADMIN_EMAIL, name: "Admin User" };
-            isAdmin = true;
-            showMessage("Dummy Login Successful (Admin User).");
-            updateUIForLoggedInUser(currentUser);
-            showPage('home');
-        } else if (email === "user@example.com" && password === "password") { // Simple dummy user login
-            currentUser = { id: "dummy-user-id", email: "user@example.com", name: "Regular User" };
-            isAdmin = false;
-            showMessage("Dummy Login Successful (Regular User).");
-            updateUIForLoggedInUser(currentUser);
-            showPage('home');
-        }
-        else {
-            showMessage("Dummy Login Failed: Invalid credentials or AWS not set up.", true);
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userEmail, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('token', result.token);
+                // We'll treat any logged-in user as a non-admin user for this implementation
+                const user = { name: result.userFirstName || 'User', email: userEmail };
+                isAdmin = false; // Hardcode isAdmin to false as per new requirements
+                currentUser = user;
+
+                showMessage("Login Successful!");
+                updateUIForLoggedInUser(user);
+                showPage('home');
+            } else {
+                throw new Error(result.message || "Login failed.");
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            showMessage(error.message, true);
         }
     });
-    
+
     document.getElementById('logout-btn').addEventListener('click', () => {
-        console.log("Dummy Logout: User logged out.");
+        localStorage.removeItem('token');
         currentUser = null;
         isAdmin = false;
         updateUIForLoggedOutUser();
@@ -149,15 +184,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateUIForLoggedInUser(user) {
-        currentUser = user; // Set global current user
-        isAdmin = user.email === ADMIN_EMAIL; // Set global admin status
+        currentUser = user;
+        isAdmin = false; // No admin functionality in this version
         
         document.getElementById('auth-container').classList.add('hidden');
         document.getElementById('user-menu').classList.remove('hidden');
         document.getElementById('dashboard-nav').classList.remove('hidden');
-        if (isAdmin) {
-            document.getElementById('add-project-btn').classList.remove('hidden');
-        }
+        document.getElementById('add-project-btn').classList.add('hidden'); // No admin functionality
     }
 
     function updateUIForLoggedOutUser() {
@@ -173,240 +206,230 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // --- Dummy Data and Functions (No AWS) ---
-    let dummyProjects = [
-        { id: "proj1", title: "Kenya Water Project", lat: 0.0236, lng: 37.9062, image: "https://via.placeholder.com/300x200?text=Kenya", status: "Funding", description: "Bringing clean water to a remote village in Kenya.", contribution: "Donate to our NGO partner." },
-        { id: "proj2", title: "Uganda Borehole Initiative", lat: 1.3733, lng: 32.2903, image: "https://via.placeholder.com/300x200?text=Uganda", status: "In Progress", description: "Drilling new boreholes in rural Uganda.", contribution: "Volunteer on the ground." },
-        { id: "proj3", title: "Ethiopia Sanitation Program", lat: 9.1450, lng: 40.4897, image: "https://via.placeholder.com/300x200?text=Ethiopia", status: "Complete", description: "Completed a sanitation and water access project.", contribution: "Spread the word about our success." },
-        { id: "proj4", title: "Tanzania Well Repair", lat: -6.3690, lng: 34.8888, image: "https://via.placeholder.com/300x200?text=Tanzania", status: "Funding", description: "Repairing a broken well serving 500 people.", contribution: "Any amount helps fund the repairs." },
-        { id: "proj5", title: "Rwanda Community Tap", lat: -1.9403, lng: 29.8739, image: "https://via.placeholder.com/300x200?text=Rwanda", status: "In Progress", description: "Installing a communal tap in a growing community.", contribution: "Local volunteers needed for distribution." },
-    ];
-    let dummySavedProjects = []; // Stores IDs of projects saved by the dummy user
+    // --- Data Fetching & Display ---
+    let projects = [];
+    let savedProjects = [];
 
     async function fetchAndDisplayWells() {
-        console.log("Dummy fetchAndDisplayWells: Loading dummy data.");
+        console.log("Fetching and displaying wells from API.");
         if (!map) { console.error("Map not initialized before fetching wells."); return; }
 
-        markers.forEach(marker => map.removeLayer(marker));
-        markers = [];
-        dummyProjects.forEach(item => {
-            const lat = parseFloat(item.lat);
-            const lng = parseFloat(item.lng);
-            if (isNaN(lat) || isNaN(lng)) {
-                console.warn(`Skipping project "${item.title}" due to invalid coordinates:`, item.lat, item.lng);
-                return;
-            }
-            const marker = L.marker([lat, lng]).addTo(map);
-            marker.bindPopup(`<b>${item.title || 'Untitled'}</b><br>${item.status || 'No Status'}<br><a href="#" class="view-project-link" data-id="${item.id}">View Details</a>`);
-            markers.push(marker);
-        });
+        try {
+            const response = await fetch('/api/projects');
+            if (!response.ok) throw new Error('Failed to fetch projects');
+            
+            projects = await response.json();
+
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+
+            projects.forEach(project => {
+                const lat = parseFloat(project.projectlatitude);
+                const lng = parseFloat(project.projectlongitude);
+                if (isNaN(lat) || isNaN(lng)) return;
+
+                const marker = L.marker([lat, lng]).addTo(map);
+                marker.bindPopup(`<b>${project.projecttitle || 'Untitled'}</b><br>${project.projectstatus || 'No Status'}<br><a href="#" class="view-project-link" data-id="${project.id}">View Details</a>`);
+            });
+        } catch (error) {
+            console.error("Error fetching wells:", error);
+            showMessage("Could not load project data.", true);
+        }
     }
 
     async function showProjectDetail(projectId) { 
-        console.log(`Dummy showProjectDetail: Showing details for ${projectId}`);
-        const project = dummyProjects.find(p => p.id === projectId);
+        const project = projects.find(p => p.id === projectId);
         
         if (project) {
             let savedButtonHtml = '';
-            if(currentUser){
-                const isSaved = dummySavedProjects.includes(projectId);
-                savedButtonHtml = `<button id="save-project-btn" data-id="${projectId}" class="${isSaved ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-amber-500 hover:bg-amber-600'} text-white font-bold py-2 px-4 rounded transition">
+            const token = localStorage.getItem('token');
+
+            if (token) {
+                // We need to know if the project is saved to show the correct button.
+                // This will be handled after dashboard implementation. For now, assume not saved.
+                const isSaved = savedProjects.some(saved => saved.id === project.id);
+                savedButtonHtml = `<button id="save-project-btn" data-id="${project.id}" class="${isSaved ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-amber-500 hover:bg-amber-600'} text-white font-bold py-2 px-4 rounded transition">
                                         <i class="fas fa-star"></i> ${isSaved ? 'Unsave Project' : 'Save Project'}
                                     </button>`;
-            }
-
-            let adminButtonsHtml = '';
-            if (isAdmin) {
-                adminButtonsHtml = `
-                    <button id="edit-project-detail-btn" data-id="${projectId}" class="bg-yellow-500 text-white font-bold py-2 px-4 rounded transition hover:bg-yellow-600">Edit</button>
-                    <button id="delete-project-detail-btn" data-id="${projectId}" class="bg-red-500 text-white font-bold py-2 px-4 rounded transition hover:bg-red-600">Delete</button>
-                `;
             }
             
             const projectDetailContainer = document.getElementById('project-detail');
             projectDetailContainer.innerHTML = `
                 <div class="bg-white p-8 rounded-lg shadow-soft">
-                    <img src="${project.image || 'https://via.placeholder.com/600x400?text=Image+Not+Found'}" alt="${project.title}" class="w-full h-96 object-cover rounded-lg mb-6">
+                    <img src="${project.projectimage || 'https://via.placeholder.com/600x400?text=Image+Not+Found'}" alt="${project.projecttitle}" class="w-full h-96 object-cover rounded-lg mb-6">
                     <div class="flex justify-between items-start mb-4">
-                            <h2 class="text-4xl font-bold text-teal-800">${project.title || 'Untitled Project'}</h2>
-                            <span class="text-sm font-semibold px-3 py-1 rounded-full ${project.status === 'Complete' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}">${project.status || 'Unknown'}</span>
+                            <h2 class="text-4xl font-bold text-teal-800">${project.projecttitle || 'Untitled Project'}</h2>
+                            <span class="text-sm font-semibold px-3 py-1 rounded-full ${project.projectstatus === 'Complete' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}">${project.projectstatus || 'Unknown'}</span>
                     </div>
-                    <p class="text-gray-700 text-lg mb-6">${project.description || 'No description available.'}</p>
+                    <p class="text-gray-700 text-lg mb-6">${project.projectdescription || 'No description available.'}</p>
                     <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
                         <h3 class="text-2xl font-bold mb-2 text-teal-700">How to Contribute</h3>
-                        <p class="text-gray-700">${project.contribution || 'Information on contributions is not available.'}</p>
+                        <p class="text-gray-700">${project.projectcontribution || 'Information on contributions is not available.'}</p>
                     </div>
                     <div class="mt-6 flex items-center space-x-4">
                         ${savedButtonHtml}
-                        ${adminButtonsHtml}
                     </div>
                 </div>`;
             showPage('project-detail');
 
         } else {
-            showMessage("Dummy Project not found.", true);
+            showMessage("Project not found.", true);
             showPage('map-page');
         }
     }
 
     async function loadDashboard() { 
-        console.log("Dummy loadDashboard: Loading saved projects for current user.");
-        const savedContainer = document.getElementById('saved-projects-container');
-        const noSavedProjectsMsg = document.getElementById('no-saved-projects');
-
-        savedContainer.innerHTML = ''; // Clear previous items
-
-        if (!currentUser || dummySavedProjects.length === 0) {
-            noSavedProjectsMsg.classList.remove('hidden');
-            savedContainer.appendChild(noSavedProjectsMsg);
+        console.log("Loading saved projects for current user.");
+        const token = localStorage.getItem('token');
+        if (!token) {
+            showMessage("Please log in to see your dashboard.", true);
+            showPage('login');
             return;
         }
 
-        noSavedProjectsMsg.classList.add('hidden');
+        const savedContainer = document.getElementById('saved-projects-container');
+        savedContainer.innerHTML = ''; // Clear previous items
 
-        dummySavedProjects.forEach(projectId => {
-            const project = dummyProjects.find(p => p.id === projectId);
-            if (project) {
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-lg shadow-soft overflow-hidden";
-                card.innerHTML = `
-                    <img src="${project.image || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${project.title}" class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <h3 class="text-xl font-bold text-teal-800">${project.title || 'Untitled'}</h3>
-                        <p class="text-sm text-gray-500 mb-2">${project.status || 'Unknown'}</p>
-                        <p class="text-gray-700 text-sm mb-4">${(project.description || '').substring(0, 100)}...</p>
-                        <button class="view-project-link w-full bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition" data-id="${project.id}">View Details</button>
-                    </div>
-                `;
-                savedContainer.appendChild(card);
+        try {
+            const response = await fetch('/api/users/saved-projects', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    showMessage("Session expired. Please log in again.", true);
+                    localStorage.removeItem('token');
+                    updateUIForLoggedOutUser();
+                    showPage('login');
+                }
+                throw new Error("Failed to fetch saved projects.");
             }
-        });
-    }
-    
-    // --- Dummy Admin Functionality ---
-    document.getElementById('add-project-btn').addEventListener('click', () => {
-        if (!isAdmin) return showMessage("Access denied. Log in as admin@example.com / password.", true);
-        projectForm.reset();
-        document.getElementById('project-id').value = '';
-        modalTitle.textContent = "Add New Project (Dummy)";
-        projectModal.classList.remove('hidden');
-    });
-    
-    document.getElementById('cancel-modal-btn').addEventListener('click', () => {
-        projectModal.classList.add('hidden');
-    });
 
-    projectForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
-        
-        const id = document.getElementById('project-id').value || 'proj' + (dummyProjects.length + 1);
-        const projectData = {
-            id: id,
-            title: document.getElementById('project-title').value,
-            lat: parseFloat(document.getElementById('project-lat').value),
-            lng: parseFloat(document.getElementById('project-lng').value),
-            image: document.getElementById('project-image').value,
-            status: document.getElementById('project-status').value,
-            description: document.getElementById('project-description').value,
-            contribution: document.getElementById('project-contribution').value,
-        };
+            savedProjects = await response.json();
+            console.log("Fetched saved projects:", savedProjects);
 
-        if (isNaN(projectData.lat) || isNaN(projectData.lng)) {
-            return showMessage("Latitude and Longitude must be valid numbers.", true);
-        }
-
-        const existingIndex = dummyProjects.findIndex(p => p.id === id);
-        if (existingIndex !== -1) {
-             dummyProjects[existingIndex] = projectData; // Update
-            showMessage("Dummy Project updated successfully!");
-        } else {
-             dummyProjects.push(projectData); // Add
-            showMessage("Dummy Project added successfully!");
-        }
-        
-        console.log("Current dummyProjects:", dummyProjects);
-        projectModal.classList.add('hidden');
-         fetchAndDisplayWells(); // Refresh map with dummy data
-        showPage('map-page');
-    });
-    
-    async function openEditModal(projectId) {
-        if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
-        
-        const project = dummyProjects.find(p => p.id === projectId);
-        if (project) {
-            document.getElementById('project-id').value = projectId;
-            document.getElementById('project-title').value = project.title || '';
-            document.getElementById('project-lat').value = project.lat || '';
-            document.getElementById('project-lng').value = project.lng || '';
-            document.getElementById('project-image').value = project.image || '';
-            document.getElementById('project-status').value = project.status || 'Funding';
-            document.getElementById('project-description').value = project.description || '';
-            document.getElementById('project-contribution').value = project.contribution || '';
-            
-            modalTitle.textContent = "Edit Project (Dummy)";
-            projectModal.classList.remove('hidden');
-        } else {
-            showMessage("Dummy Project not found.", true);
+            if (savedProjects.length === 0) {
+                savedContainer.innerHTML = `<p id="no-saved-projects" class="text-gray-500">You haven't saved any projects yet.</p>`;
+            } else {
+                savedProjects.forEach(project => {
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-lg shadow-soft overflow-hidden";
+                    card.innerHTML = `
+                        <img src="${project.projectimage || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${project.projecttitle}" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold text-teal-800">${project.projecttitle || 'Untitled'}</h3>
+                            <p class="text-sm text-gray-500 mb-2">${project.projectstatus || 'Unknown'}</p>
+                            <p class="text-gray-700 text-sm mb-4">${(project.projectdescription || '').substring(0, 100)}...</p>
+                            <button class="unsave-project-btn w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition" data-id="${project.id}">Unsave</button>
+                        </div>
+                    `;
+                    savedContainer.appendChild(card);
+                });
+            }
+        } catch (error) {
+            console.error("Full error object from loadDashboard:", error);
+            showMessage(error.message, true);
         }
     }
     
-    async function deleteProject(projectId) {
-        if (!isAdmin) return showMessage("Action not allowed. Log in as admin@example.com / password.", true);
-
-        if (confirm("Are you sure you want to delete this dummy project?")) {
-            dummyProjects = dummyProjects.filter(p => p.id !== projectId);
-            dummySavedProjects = dummySavedProjects.filter(id => id !== projectId); // Remove from saved too
-            showMessage("Dummy Project deleted successfully.");
-            console.log("Current dummyProjects:", dummyProjects);
-            showPage('map-page');
-            fetchAndDisplayWells();
-        }
-    }
-
+    // --- Admin functionality is removed as per new instructions ---
+    
     // --- GLOBAL EVENT LISTENERS (for dynamically added content) ---
     document.addEventListener('click', async (e) => {
-        // View project button on cards (map popup or dashboard)
+        // View project button on cards or map popup
         if (e.target.matches('.view-project-link[data-id]')) {
             e.preventDefault();
             const projectId = e.target.dataset.id;
-            showProjectDetail(projectId);
+            await showProjectDetail(projectId);
         }
-        // Save project button on detail page
+
+        // Save/Unsave project button on detail page
         if (e.target.matches('#save-project-btn')) {
             e.preventDefault();
-            if (!currentUser) return showMessage("Please log in to save projects (dummy).", true);
+            const token = localStorage.getItem('token');
+            if (!token) return showMessage("Please log in to save projects.", true);
 
             const projectId = e.target.dataset.id;
-            const isCurrentlySaved = dummySavedProjects.includes(projectId);
-
+            const isCurrentlySaved = savedProjects.some(p => p.id === projectId);
+            
             if (isCurrentlySaved) {
-                dummySavedProjects = dummySavedProjects.filter(id => id !== projectId);
-                showMessage("Dummy Project unsaved.");
-                e.target.innerHTML = '<i class="fas fa-star"></i> Save Project';
-                e.target.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
-                e.target.classList.add('bg-amber-500', 'hover:bg-amber-600');
+                // Unsave from detail view
+                await unsaveProject(projectId, e.target);
             } else {
-                dummySavedProjects.push(projectId);
-                showMessage("Dummy Project saved!");
-                e.target.innerHTML = '<i class="fas fa-star"></i> Unsave Project';
-                e.target.classList.remove('bg-amber-500', 'hover:bg-amber-600');
-                e.target.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+                // Save from detail view
+                await saveProject(projectId, e.target);
             }
-            console.log("Dummy Saved Projects:", dummySavedProjects);
         }
-        // Admin buttons on detail page
-        if (e.target.matches('#edit-project-detail-btn')) {
-            openEditModal(e.target.dataset.id);
-        }
-        if (e.target.matches('#delete-project-detail-btn')) {
-            deleteProject(e.target.dataset.id);
+
+        // Unsave button on dashboard card
+        if (e.target.matches('.unsave-project-btn[data-id]')) {
+            e.preventDefault();
+            const projectId = e.target.dataset.id;
+            await unsaveProject(projectId, e.target);
         }
     });
 
+    async function saveProject(projectId, buttonElement) {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/users/saved-projects', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token 
+                },
+                body: JSON.stringify({ projectId: projectId })
+            });
+
+            if (!response.ok) throw new Error('Failed to save project.');
+
+            const savedProject = await response.json();
+            savedProjects.push(savedProject); // Add to local list
+            
+            showMessage("Project saved!");
+            if (buttonElement) { // Update button style if it exists
+                buttonElement.innerHTML = '<i class="fas fa-star"></i> Unsave Project';
+                buttonElement.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+                buttonElement.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+            }
+        } catch (error) {
+            console.error("Error saving project:", error);
+            showMessage(error.message, true);
+        }
+    }
+
+    async function unsaveProject(projectId, buttonElement) {
+        const token = localStorage.getItem('token');
+        if (!confirm("Are you sure you want to unsave this project?")) return;
+        
+        try {
+            const response = await fetch(`/api/users/saved-projects/${projectId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!response.ok) throw new Error('Failed to unsave project.');
+
+            savedProjects = savedProjects.filter(p => p.id !== projectId); // Remove from local list
+            showMessage("Project unsaved successfully.");
+
+            // If on dashboard, reload it. If on detail page, update the button.
+            if (buttonElement && buttonElement.closest('.page.active')?.id === 'dashboard') {
+                loadDashboard();
+            } else if (buttonElement) {
+                buttonElement.innerHTML = '<i class="fas fa-star"></i> Save Project';
+                buttonElement.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                buttonElement.classList.add('bg-amber-500', 'hover:bg-amber-600');
+            }
+        } catch (error) {
+            console.error("Error unsaving project:", error);
+            showMessage(error.message, true);
+        }
+    }
+
+
     // --- Initial Load ---
-    checkSession(); // Will call dummy checkSession
+    checkSession(); 
     showPage('home'); // Show home page initially
 
 }); // End DOMContentLoaded
