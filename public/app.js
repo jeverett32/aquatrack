@@ -226,16 +226,16 @@ document.addEventListener('DOMContentLoaded', () => {
             allProjects = projects; // Store fetched projects globally
 
             allProjects.forEach(project => {
-                const lat = parseFloat(project.projectlatitude);
-                const lng = parseFloat(project.projectlongitude);
+                const lat = parseFloat(project.lat);
+                const lng = parseFloat(project.lng);
 
                 if (isNaN(lat) || isNaN(lng)) {
-                    console.warn(`Skipping project "${project.projectname}" due to invalid coordinates:`, project.projectlatitude, project.projectlongitude);
+                    console.warn(`Skipping project "${project.title}" due to invalid coordinates:`, project.lat, project.lng);
                     return;
                 }
 
                 const marker = L.marker([lat, lng]).addTo(map);
-                marker.bindPopup(`<b>${project.projecttitle || 'Untitled'}</b><br>${project.projectstatus || 'No Status'}<br><a href="#" class="view-project-link" data-id="${project.id}">View Details</a>`);
+                marker.bindPopup(`<b>${project.title || 'Untitled'}</b><br>${project.status || 'No Status'}<br><a href="#" class="view-project-link" data-id="${project.id}">View Details</a>`);
                 markers.push(marker);
             });
         } catch (error) {
@@ -262,15 +262,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const projectDetailContainer = document.getElementById('project-detail');
             projectDetailContainer.innerHTML = `
                 <div class="bg-white p-8 rounded-lg shadow-soft">
-                    <img src="${project.projectimageurl || 'https://via.placeholder.com/600x400?text=Image+Not+Found'}" alt="${project.projecttitle}" class="w-full h-96 object-cover rounded-lg mb-6">
+                    <img src="${project.image || 'https://via.placeholder.com/600x400?text=Image+Not+Found'}" alt="${project.title}" class="w-full h-96 object-cover rounded-lg mb-6">
                     <div class="flex justify-between items-start mb-4">
-                            <h2 class="text-4xl font-bold text-teal-800">${project.projecttitle || 'Untitled Project'}</h2>
-                            <span class="text-sm font-semibold px-3 py-1 rounded-full ${project.projectstatus === 'Complete' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}">${project.projectstatus || 'Unknown'}</span>
+                            <h2 class="text-4xl font-bold text-teal-800">${project.title || 'Untitled Project'}</h2>
+                            <span class="text-sm font-semibold px-3 py-1 rounded-full ${project.status === 'Complete' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}">${project.status || 'Unknown'}</span>
                     </div>
-                    <p class="text-gray-700 text-lg mb-6">${project.projectdescription || 'No description available.'}</p>
+                    <p class="text-gray-700 text-lg mb-6">${project.description || 'No description available.'}</p>
                     <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
                         <h3 class="text-2xl font-bold mb-2 text-teal-700">How to Contribute</h3>
-                        <p class="text-gray-700">${project.projectcontributions || 'Information on contributions is not available.'}</p>
+                        <p class="text-gray-700">${project.contribution || 'Information on contributions is not available.'}</p>
                     </div>
                     <div class="mt-6 flex items-center space-x-4">
                         ${savedButtonHtml}
@@ -321,11 +321,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const card = document.createElement('div');
                     card.className = "bg-white rounded-lg shadow-soft overflow-hidden";
                     card.innerHTML = `
-                        <img src="${project.projectimage || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${project.projecttitle}" class="w-full h-48 object-cover">
+                        <img src="${project.image || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${project.title}" class="w-full h-48 object-cover">
                         <div class="p-4">
-                            <h3 class="text-xl font-bold text-teal-800">${project.projecttitle || 'Untitled'}</h3>
-                            <p class="text-sm text-gray-500 mb-2">${project.projectstatus || 'Unknown'}</p>
-                            <p class="text-gray-700 text-sm mb-4">${(project.projectdescription || '').substring(0, 100)}...</p>
+                            <h3 class="text-xl font-bold text-teal-800">${project.title || 'Untitled'}</h3>
+                            <p class="text-sm text-gray-500 mb-2">${project.status || 'Unknown'}</p>
+                            <p class="text-gray-700 text-sm mb-4">${(project.description || '').substring(0, 100)}...</p>
                             <button class="unsave-project-btn w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition" data-id="${project.id}">Unsave</button>
                         </div>
                     `;
