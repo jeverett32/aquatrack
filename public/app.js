@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let isAdmin = false;
     const ADMIN_EMAIL = "admin@example.com"; // Dummy admin email
     let markers = [];
+    let allProjects = []; // New global variable to store fetched projects
+    let savedProjects = [];
     // let dynamoDbClient; // Will not be initialized without AWS SDK
 
     // --- UI & NAVIGATION ---
@@ -46,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageId === 'map-page') {
             setTimeout(() => initMap(), 10); 
         } else if (pageId === 'dashboard') {
-            loadDashboard(); // Will call dummy loadDashboard
+            loadDashboard();
         }
     }
 
@@ -95,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             noWrap: true
         }).addTo(map);
         
-        // Call dummy function for now
         fetchAndDisplayWells(); 
     }
     
@@ -206,47 +207,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // --- Data Fetching & Display ---
-    let projects = [];
-    let savedProjects = [];
+    // --- Data and Functions ---
 
     async function fetchAndDisplayWells() {
-        console.log("Fetching and displaying wells from API.");
         if (!map) { console.error("Map not initialized before fetching wells."); return; }
+
+        // Clear existing markers
+        markers.forEach(marker => map.removeLayer(marker));
+        markers = [];
+        allProjects = []; // Clear previous projects
 
         try {
             const response = await fetch('/api/projects');
-            if (!response.ok) throw new Error('Failed to fetch projects');
-            
-            projects = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const projects = await response.json();
+            allProjects = projects; // Store fetched projects globally
 
-            markers.forEach(marker => map.removeLayer(marker));
-            markers = [];
-
-            projects.forEach(project => {
+            allProjects.forEach(project => {
                 const lat = parseFloat(project.projectlatitude);
                 const lng = parseFloat(project.projectlongitude);
-                if (isNaN(lat) || isNaN(lng)) return;
+
+                if (isNaN(lat) || isNaN(lng)) {
+                    console.warn(`Skipping project "${project.projectname}" due to invalid coordinates:`, project.projectlatitude, project.projectlongitude);
+                    return;
+                }
 
                 const marker = L.marker([lat, lng]).addTo(map);
                 marker.bindPopup(`<b>${project.projecttitle || 'Untitled'}</b><br>${project.projectstatus || 'No Status'}<br><a href="#" class="view-project-link" data-id="${project.id}">View Details</a>`);
+                markers.push(marker);
             });
         } catch (error) {
-            console.error("Error fetching wells:", error);
-            showMessage("Could not load project data.", true);
+            console.error("Error fetching projects:", error);
+            showMessage("Failed to load projects. Please try again later.", true);
         }
     }
 
     async function showProjectDetail(projectId) { 
-        const project = projects.find(p => p.id === projectId);
+        console.log(`Showing details for project ID: ${projectId}`);
+        const project = allProjects.find(p => p.id === projectId);
         
         if (project) {
             let savedButtonHtml = '';
             const token = localStorage.getItem('token');
 
             if (token) {
-                // We need to know if the project is saved to show the correct button.
-                // This will be handled after dashboard implementation. For now, assume not saved.
                 const isSaved = savedProjects.some(saved => saved.id === project.id);
                 savedButtonHtml = `<button id="save-project-btn" data-id="${project.id}" class="${isSaved ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-amber-500 hover:bg-amber-600'} text-white font-bold py-2 px-4 rounded transition">
                                         <i class="fas fa-star"></i> ${isSaved ? 'Unsave Project' : 'Save Project'}
@@ -256,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const projectDetailContainer = document.getElementById('project-detail');
             projectDetailContainer.innerHTML = `
                 <div class="bg-white p-8 rounded-lg shadow-soft">
-                    <img src="${project.projectimage || 'https://via.placeholder.com/600x400?text=Image+Not+Found'}" alt="${project.projecttitle}" class="w-full h-96 object-cover rounded-lg mb-6">
+                    <img src="${project.projectimageurl || 'https://via.placeholder.com/600x400?text=Image+Not+Found'}" alt="${project.projecttitle}" class="w-full h-96 object-cover rounded-lg mb-6">
                     <div class="flex justify-between items-start mb-4">
                             <h2 class="text-4xl font-bold text-teal-800">${project.projecttitle || 'Untitled Project'}</h2>
                             <span class="text-sm font-semibold px-3 py-1 rounded-full ${project.projectstatus === 'Complete' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}">${project.projectstatus || 'Unknown'}</span>
@@ -264,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="text-gray-700 text-lg mb-6">${project.projectdescription || 'No description available.'}</p>
                     <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
                         <h3 class="text-2xl font-bold mb-2 text-teal-700">How to Contribute</h3>
-                        <p class="text-gray-700">${project.projectcontribution || 'Information on contributions is not available.'}</p>
+                        <p class="text-gray-700">${project.projectcontributions || 'Information on contributions is not available.'}</p>
                     </div>
                     <div class="mt-6 flex items-center space-x-4">
                         ${savedButtonHtml}
@@ -331,8 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
             showMessage(error.message, true);
         }
     }
-    
-    // --- Admin functionality is removed as per new instructions ---
     
     // --- GLOBAL EVENT LISTENERS (for dynamically added content) ---
     document.addEventListener('click', async (e) => {

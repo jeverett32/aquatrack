@@ -1,0 +1,10 @@
+This is a team skill check. Work with your teams to deploy a Node.js/Express application on AWS Elastic Beanstalk. You can continue the deployment of an application you have already, or deploy a brand new application. The requirements:
+
+    Application deployed on Elastic Beanstalk (30 points)
+    Include a custom DNS record (can be an is404.net subdomain) to point to your application (10 points)
+    The application must work with an RDS database (5 points)
+    The application must include an HTTPS certificate (5 points)
+
+To submit, create a document containing the following:
+
+    Screenshots demonstrating your completion of the requirements.

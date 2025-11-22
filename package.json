@@ -2,15 +2,21 @@
   "name": "aquatrack",
   "version": "1.0.0",
   "description": "A website featuring an interactive map for tracking potential water well locations and projects in underdeveloped countries",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
+    "start": "npm install && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "pg": "^8.16.3"
   }
 }

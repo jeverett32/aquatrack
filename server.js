@@ -1,139 +1,290 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const app = express();
-const port = 3000;
+
+app.set('view engine', 'ejs');
+
+const port = process.env.PORT || 3000;
+const saltRounds = 10; // for bcrypt
+
+// Create a new PostgreSQL connection pool
+const knex = require('knex')({
+    client: 'pg',
+    connection: {
+        host: process.env.RDS_HOSTNAME || "localhost",
+        user: process.env.RDS_USERNAME || "postgres",
+        password: process.env.RDS_PASSWORD || "SuperSecretPassword",
+        database: process.env.RDS_DATABASE || "aquatrack",
+        port: process.env.RDS_PORT || 5433
+    }
+});
 
 // --- Middleware ---
 // Parse JSON request bodies
 app.use(express.json());
 // Serve static files (CSS, client-side JS, images) from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Set EJS as the view engine
-app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// --- Dummy Data Store ---
-// NOTE: This is for demonstration only. In a real app, use a database.
-// To test login, use email: "test@example.com", password: "password"
-const users = [
-    { id: 'user1', userEmail: 'test@example.com', userFirstName: 'Test', userLastName: 'User', password: 'password' }
-];
-const projects = [
-    { id: "proj1", projecttitle: "Kenya Water Project", projectlatitude: 0.0236, projectlongitude: 37.9062, projectimage: "https://via.placeholder.com/300x200?text=Kenya", projectstatus: "Funding", projectdescription: "Bringing clean water to a remote village in Kenya.", projectcontribution: "Donate to our NGO partner." },
-    { id: "proj2", projecttitle: "Uganda Borehole Initiative", projectlatitude: 1.3733, projectlongitude: 32.2903, projectimage: "https://via.placeholder.com/300x200?text=Uganda", projectstatus: "In Progress", projectdescription: "Drilling new boreholes in rural Uganda.", projectcontribution: "Volunteer on the ground." },
-    { id: "proj3", projecttitle: "Ethiopia Sanitation Program", projectlatitude: 9.1450, projectlongitude: 40.4897, projectimage: "https://via.placeholder.com/300x200?text=Ethiopia", projectstatus: "Complete", projectdescription: "Completed a sanitation and water access project.", projectcontribution: "Spread the word about our success." }
-];
-// Pre-save a project for our test user
-const savedProjects = {
-    'user1': ['proj2'] 
-};
 
-
-// --- API Routes ---
-
-// Registration
-app.post('/api/register', (req, res) => {
-    const { userEmail, userFirstName, userLastName, password } = req.body;
-    if (!userEmail || !password || !userFirstName) {
-        return res.status(400).json({ message: "Email, first name, and password are required." });
-    }
-    if (users.find(u => u.userEmail === userEmail)) {
-        return res.status(409).json({ message: "An account with this email already exists." });
-    }
-    const newUser = { id: `user${users.length + 1}`, userEmail, userFirstName, userLastName, password }; // In a real app, hash the password!
-    users.push(newUser);
-    console.log("Users:", users);
-    res.status(201).json({ message: "User registered successfully!" });
-});
-
-// Login
-app.post('/api/login', (req, res) => {
-    const { userEmail, password } = req.body;
-    const user = users.find(u => u.userEmail === userEmail && u.password === password);
-    if (user) {
-        // In a real app, generate a real JWT token.
-        const dummyToken = `fake-jwt-for-${user.id}`;
-        res.json({ token: dummyToken, userFirstName: user.userFirstName });
-    } else {
-        res.status(401).json({ message: "Invalid email or password." });
-    }
-});
-
-// Get all projects
-app.get('/api/projects', (req, res) => {
-    res.json(projects);
-});
-
-// --- "Authenticated" Routes ---
-
-// Middleware to "verify" our dummy token
-const authMiddleware = (req, res, next) => {
+// --- Authentication Middleware ---
+const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ message: "Authorization token is missing or invalid." });
-    }
-    const token = authHeader.split(' ')[1];
-    // In our dummy app, the token is "fake-jwt-for-userId"
-    const userId = token.replace('fake-jwt-for-', '');
-    const user = users.find(u => u.id === userId);
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
-    if (user) {
-        req.user = user; // Attach user to the request
+    if (token == null) return res.sendStatus(401); // if no token, unauthorized
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403); // if token is no longer valid
+        req.user = user;
         next();
-    } else {
-        res.status(401).json({ message: "Invalid token." });
-    }
+    });
 };
 
-// Get saved projects for the logged-in user
-app.get('/api/users/saved-projects', authMiddleware, (req, res) => {
-    const userSaved = savedProjects[req.user.id] || [];
-    const savedProjectDetails = projects.filter(p => userSaved.includes(p.id));
-    res.json(savedProjectDetails);
-});
-
-// Save a project
-app.post('/api/users/saved-projects', authMiddleware, (req, res) => {
-    const { projectId } = req.body;
-    const project = projects.find(p => p.id === projectId);
-    if (!project) {
-        return res.status(404).json({ message: "Project not found." });
+const isManager = (req, res, next) => {
+    if (req.user.role !== 'manager') {
+        return res.status(403).json({ message: 'Access denied. Manager role required.' });
     }
-
-    if (!savedProjects[req.user.id]) {
-        savedProjects[req.user.id] = [];
-    }
-    
-    if (savedProjects[req.user.id].includes(projectId)) {
-        return res.status(409).json({ message: "Project already saved." });
-    }
-
-    savedProjects[req.user.id].push(projectId);
-    console.log("Saved Projects:", savedProjects);
-    res.status(201).json(project); // Return the saved project
-});
-
-// Unsave a project
-app.delete('/api/users/saved-projects/:projectId', authMiddleware, (req, res) => {
-    const { projectId } = req.params;
-    if (!savedProjects[req.user.id] || !savedProjects[req.user.id].includes(projectId)) {
-        return res.status(404).json({ message: "Saved project not found." });
-    }
-    savedProjects[req.user.id] = savedProjects[req.user.id].filter(id => id !== projectId);
-    console.log("Saved Projects:", savedProjects);
-    res.json({ message: "Project unsaved successfully." });
-});
+    next();
+};
 
 
 // --- Page Route ---
-// This should be one of the last routes
 app.get('/', (req, res) => {
     res.render('index', { title: 'AquaTrack' });
 });
 
+// --- API Routes ---
+
+// Get all well projects
+app.get('/api/projects', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                p.ProjectID,
+                p.ProjectTitle,
+                p.ProjectStatus,
+                p.ProjectLatitude,
+                p.ProjectLongitude,
+                pr.PartnerName,
+                pr.PartnerWebsiteUrl
+            FROM Well_Projects p
+            LEFT JOIN Partners pr ON p.PartnerID = pr.PartnerID;
+        `;
+        const result = await knex.raw(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching projects:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Create a new well project (Managers only)
+app.post('/api/projects', authenticateToken, isManager, async (req, res) => {
+    const { partnerId, projectTitle, projectLatitude, projectLongitude } = req.body;
+
+    if (!projectTitle || !projectLatitude || !projectLongitude) {
+        return res.status(400).json({ message: 'Project title, latitude, and longitude are required.' });
+    }
+
+    try {
+        const query = `
+            INSERT INTO Well_Projects (PartnerID, ProjectTitle, ProjectLatitude, ProjectLongitude)
+            VALUES ($1, $2, $3, $4)
+            RETURNING *;
+        `;
+        const values = [partnerId, projectTitle, projectLatitude, projectLongitude];
+        const result = await knex.raw(query, values);
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error('Error creating project:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Update a well project (Managers only)
+app.put('/api/projects/:id', authenticateToken, isManager, async (req, res) => {
+    const projectId = req.params.id;
+    const { partnerId, projectTitle, projectLatitude, projectLongitude } = req.body;
+
+    if (!projectTitle || !projectLatitude || !projectLongitude) {
+        return res.status(400).json({ message: 'Project title, latitude, and longitude are required.' });
+    }
+
+    try {
+        const query = `
+            UPDATE Well_Projects
+            SET PartnerID = $1, ProjectTitle = $2, ProjectLatitude = $3, ProjectLongitude = $4
+            WHERE ProjectID = $5
+            RETURNING *;
+        `;
+        const values = [partnerId, projectTitle, projectLatitude, projectLongitude, projectId];
+        const result = await knex.raw(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Project not found.' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Error updating project:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Delete a well project (Managers only)
+app.delete('/api/projects/:id', authenticateToken, isManager, async (req, res) => {
+    const projectId = req.params.id;
+
+    try {
+        const result = await knex('Well_Projects').where('ProjectID', projectId).del().returning('*');
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Project not found.' });
+        }
+
+        res.status(200).json({ message: 'Project deleted successfully.' });
+    } catch (err) {
+        console.error('Error deleting project:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// --- User-specific Routes ---
+
+// Get all projects saved by the current user
+app.get('/api/users/saved-projects', authenticateToken, async (req, res) => {
+    const userId = req.user.userId;
+    try {
+        const query = `
+            SELECT p.* FROM Well_Projects p
+            JOIN Saved_Projects sp ON p.ProjectID = sp.ProjectID
+            WHERE sp.UserID = $1;
+        `;
+        const result = await knex.raw(query, [userId]);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching saved projects:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Save a project for the current user
+app.post('/api/users/saved-projects', authenticateToken, async (req, res) => {
+    const userId = req.user.userId;
+    const { projectId } = req.body;
+    try {
+        const query = 'INSERT INTO Saved_Projects (UserID, ProjectID) VALUES ($1, $2) RETURNING *;';
+        const result = await knex.raw(query, [userId, projectId]);
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        if (err.code === '23505') { // Unique violation
+            return res.status(409).json({ message: 'Project already saved.' });
+        }
+        console.error('Error saving project:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Unsave a project for the current user
+app.delete('/api/users/saved-projects/:projectId', authenticateToken, async (req, res) => {
+    const userId = req.user.userId;
+    const { projectId } = req.params;
+    try {
+        const query = 'DELETE FROM Saved_Projects WHERE UserID = $1 AND ProjectID = $2 RETURNING *;';
+        const result = await knex.raw(query, [userId, projectId]);
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Saved project not found.' });
+        }
+        res.status(200).json({ message: 'Project unsaved successfully.' });
+    } catch (err) {
+        console.error('Error unsaving project:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+
+// User Registration
+app.post('/api/register', async (req, res) => {
+    const { userEmail, userFirstName, userLastName, password } = req.body;
+
+    if (!userEmail || !password) {
+        return res.status(400).json({ message: 'Email and password are required.' });
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const newUserQuery = `
+            INSERT INTO Users (UserEmail, UserFirstName, UserLastName, PasswordHash)
+            VALUES ($1, $2, $3, $4)
+            RETURNING UserID, UserEmail, UserRole;
+        `;
+        const values = [userEmail, userFirstName, userLastName, hashedPassword];
+        
+        const result = await knex.raw(newUserQuery, values);
+        res.status(201).json({ message: 'User registered successfully!', user: result.rows[0] });
+
+    } catch (err) {
+        if (err.code === '23505') { // Unique violation
+            return res.status(409).json({ message: 'An account with this email already exists.' });
+        }
+        console.error('Error during registration:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// User Login
+app.post('/api/login', async (req, res) => {
+    const { userEmail, password } = req.body;
+
+    if (!userEmail || !password) {
+        return res.status(400).json({ message: 'Email and password are required.' });
+    }
+
+    try {
+        const userQuery = 'SELECT * FROM Users WHERE UserEmail = $1';
+        const result = await knex.raw(userQuery, [userEmail]);
+        const user = result.rows[0];
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials.' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.passwordhash);
+
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid credentials.' });
+        }
+
+        // User is authenticated, create a JWT
+        const payload = {
+            userId: user.userid,
+            email: user.useremail,
+            role: user.userrole
+        };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({ message: 'Logged in successfully!', token });
+
+    } catch (err) {
+        console.error('Error during login:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+
 // Start the server
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`Server listening at http://localhost:${port}`);
+    // Test the database connection
+    try {
+        await knex.raw('select 1+1 as result');
+        console.log('Database connected successfully!');
+    } catch (err) {
+        console.error('Error connecting to the database:', err.stack);
+    }
 });
