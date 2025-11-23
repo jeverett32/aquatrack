@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- App State ---
     let map;
-    let currentUser = null; 
+    let currentUser = null;
     let isAdmin = false;
     const ADMIN_EMAIL = "admin@example.com"; // Dummy admin email
     let markers = [];
@@ -45,8 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
         pages.forEach(page => page.classList.toggle('active', page.id === pageId));
         window.scrollTo(0, 0);
 
+        // Control visibility of the admin "Add Project" button
+        if (pageId === 'dashboard' && isAdmin) {
+            document.getElementById('add-project-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('add-project-btn').classList.add('hidden');
+        }
+
         if (pageId === 'map-page') {
-            setTimeout(() => initMap(), 10); 
+            setTimeout(() => initMap(), 10);
         } else if (pageId === 'dashboard') {
             loadDashboard();
         }
@@ -81,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showMessage("Error: Map library failed to load.", true);
             return;
         }
-        
+
         if (map && map.getContainer()._leaflet_id) { // Check if map is already initialized
             setTimeout(() => map.invalidateSize(), 10);
             return;
@@ -96,28 +103,44 @@ document.addEventListener('DOMContentLoaded', () => {
             attribution: '&copy; OpenStreetMap contributors',
             noWrap: true
         }).addTo(map);
-        
-        fetchAndDisplayWells(); 
+
+        fetchAndDisplayWells();
     }
-    
+
     // --- Authentication & Session Management ---
     function checkSession() {
         const token = localStorage.getItem('token');
         if (token) {
             // Here you might want to decode the token to get user info, but for now, we'll just use the presence of a token
-            // For simplicity, we assume a token means a valid, non-admin user.
+            // For simplicity, we we assume a token means a valid, non-admin user.
             // A more robust solution would be to verify the token with the server or decode it on the client.
-            const user = { name: 'User', email: '' }; // Dummy user object
+            const user = parseJwt(token); // Decode token to get user info
             updateUIForLoggedInUser(user);
         } else {
             updateUIForLoggedOutUser();
         }
     }
 
+    function parseJwt(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            console.error("Error decoding JWT:", e);
+            return null;
+        }
+    }
+
+
     document.getElementById('register-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const userFirstName = document.getElementById('register-name').value;
-        const userLastName = 'user';
+        const userFirstName = document.getElementById('register-firstname').value;
+        const userLastName = document.getElementById('register-lastname').value;
         const userEmail = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
 
@@ -158,9 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 localStorage.setItem('token', result.token);
-                // We'll treat any logged-in user as a non-admin user for this implementation
-                const user = { name: result.userFirstName || 'User', email: userEmail };
-                isAdmin = false; // Hardcode isAdmin to false as per new requirements
+                const user = parseJwt(result.token); // Decode the token to get the full user object
+                isAdmin = user && user.role === 'manager';
                 currentUser = user;
 
                 showMessage("Login Successful!");
@@ -186,12 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateUIForLoggedInUser(user) {
         currentUser = user;
-        isAdmin = false; // No admin functionality in this version
-        
+        isAdmin = user && user.role === 'manager'; 
+
         document.getElementById('auth-container').classList.add('hidden');
         document.getElementById('user-menu').classList.remove('hidden');
         document.getElementById('dashboard-nav').classList.remove('hidden');
-        document.getElementById('add-project-btn').classList.add('hidden'); // No admin functionality
     }
 
     function updateUIForLoggedOutUser() {
@@ -201,12 +222,108 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('auth-container').classList.remove('hidden');
         document.getElementById('user-menu').classList.add('hidden');
         document.getElementById('dashboard-nav').classList.add('hidden');
-        document.getElementById('add-project-btn').classList.add('hidden');
         if (document.getElementById('dashboard')?.classList.contains('active')) {
             showPage('home');
         }
     }
-    
+
+    // --- Admin Project Modal ---
+    document.getElementById('add-project-btn').addEventListener('click', () => {
+        projectForm.reset();
+        document.getElementById('project-id').value = '';
+        modalTitle.textContent = 'Add New Project';
+        projectModal.classList.remove('hidden');
+    });
+
+    projectForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await handleProjectFormSubmit();
+    });
+
+    document.querySelector('.close-modal').addEventListener('click', () => {
+        projectModal.classList.add('hidden');
+    });
+
+    projectModal.addEventListener('click', (e) => {
+        if (e.target === projectModal) {
+            projectModal.classList.add('hidden');
+        }
+    });
+
+    async function handleProjectFormSubmit() {
+        const token = localStorage.getItem('token');
+        if (!token || !isAdmin) {
+            return showMessage("You are not authorized to perform this action.", true);
+        }
+
+        const projectId = document.getElementById('project-id').value;
+        const projectData = {
+            partnerId: document.getElementById('project-partnerid').value,
+            title: document.getElementById('project-title').value,
+            lat: document.getElementById('project-lat').value,
+            lng: document.getElementById('project-lng').value,
+        };
+
+        const method = projectId ? 'PUT' : 'POST';
+        const endpoint = projectId ? `/api/projects/${projectId}` : '/api/projects';
+
+        try {
+            const response = await fetch(endpoint, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(projectData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showMessage(`Project successfully ${projectId ? 'updated' : 'created'}!`);
+                projectModal.classList.add('hidden');
+                await fetchAndDisplayWells(); // Refresh the map
+            } else {
+                throw new Error(result.message || `Failed to ${projectId ? 'update' : 'create'} project.`);
+            }
+        } catch (error) {
+            console.error("Project form error:", error);
+            showMessage(error.message, true);
+        }
+    }
+
+    async function deleteProject(projectId) {
+        if (!confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        if (!token || !isAdmin) {
+            return showMessage("You are not authorized to perform this action.", true);
+        }
+
+        try {
+            const response = await fetch(`/api/projects/${projectId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                showMessage("Project deleted successfully.");
+                await fetchAndDisplayWells(); // Refresh map
+                showPage('map-page'); // Go back to map view
+            } else {
+                const result = await response.json();
+                throw new Error(result.message || "Failed to delete project.");
+            }
+        } catch (error) {
+            console.error("Delete project error:", error);
+            showMessage(error.message, true);
+        }
+    }
+
     // --- Data and Functions ---
 
     async function fetchAndDisplayWells() {
@@ -244,13 +361,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function showProjectDetail(projectId) { 
+    async function showProjectDetail(projectId) {
         console.log(`Showing details for project ID: ${projectId}`);
         const project = allProjects.find(p => p.id === projectId);
-        
+
         if (project) {
             let savedButtonHtml = '';
+            let adminButtonsHtml = '';
             const token = localStorage.getItem('token');
+
+            if (isAdmin) {
+                adminButtonsHtml = `
+                    <button id="edit-project-btn" data-id="${project.id}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition">
+                        <i class="fas fa-edit"></i> Edit Project
+                    </button>
+                    <button id="delete-project-btn" data-id="${project.id}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition">
+                        <i class="fas fa-trash"></i> Delete Project
+                    </button>
+                `;
+            }
 
             if (token) {
                 const isSaved = savedProjects.some(saved => saved.id === project.id);
@@ -258,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         <i class="fas fa-star"></i> ${isSaved ? 'Unsave Project' : 'Save Project'}
                                     </button>`;
             }
-            
+
             const projectDetailContainer = document.getElementById('project-detail');
             projectDetailContainer.innerHTML = `
                 <div class="bg-white p-8 rounded-lg shadow-soft">
@@ -274,6 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="mt-6 flex items-center space-x-4">
                         ${savedButtonHtml}
+                        ${adminButtonsHtml}
                     </div>
                 </div>`;
             showPage('project-detail');
@@ -284,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function loadDashboard() { 
+    async function loadDashboard() {
         console.log("Loading saved projects for current user.");
         const token = localStorage.getItem('token');
         if (!token) {
@@ -337,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showMessage(error.message, true);
         }
     }
-    
+
     // --- GLOBAL EVENT LISTENERS (for dynamically added content) ---
     document.addEventListener('click', async (e) => {
         // View project button on cards or map popup
@@ -355,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const projectId = e.target.dataset.id;
             const isCurrentlySaved = savedProjects.some(p => p.id === projectId);
-            
+
             if (isCurrentlySaved) {
                 // Unsave from detail view
                 await unsaveProject(projectId, e.target);
@@ -371,6 +501,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const projectId = e.target.dataset.id;
             await unsaveProject(projectId, e.target);
         }
+
+        // Edit project button on detail page (for admins)
+        if (e.target.matches('#edit-project-btn')) {
+            e.preventDefault();
+            const projectId = e.target.dataset.id;
+            const project = allProjects.find(p => p.id == projectId);
+            if (project) {
+                document.getElementById('project-id').value = project.id;
+                document.getElementById('project-partnerid').value = project.partnerId;
+                document.getElementById('project-title').value = project.title;
+                document.getElementById('project-lat').value = project.lat;
+                document.getElementById('project-lng').value = project.lng;
+                modalTitle.textContent = 'Edit Project';
+                projectModal.classList.remove('hidden');
+            }
+        }
+
+        // Delete project button on detail page (for admins)
+        if (e.target.matches('#delete-project-btn')) {
+            e.preventDefault();
+            const projectId = e.target.dataset.id;
+            await deleteProject(projectId);
+        }
     });
 
     async function saveProject(projectId, buttonElement) {
@@ -378,9 +531,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/api/users/saved-projects', {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token 
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify({ projectId: projectId })
             });
@@ -389,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const savedProject = await response.json();
             savedProjects.push(savedProject); // Add to local list
-            
+
             showMessage("Project saved!");
             if (buttonElement) { // Update button style if it exists
                 buttonElement.innerHTML = '<i class="fas fa-star"></i> Unsave Project';
@@ -405,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function unsaveProject(projectId, buttonElement) {
         const token = localStorage.getItem('token');
         if (!confirm("Are you sure you want to unsave this project?")) return;
-        
+
         try {
             const response = await fetch(`/api/users/saved-projects/${projectId}`, {
                 method: 'DELETE',
@@ -433,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Initial Load ---
-    checkSession(); 
+    checkSession();
     showPage('home'); // Show home page initially
 
 }); // End DOMContentLoaded
