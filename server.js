@@ -74,6 +74,7 @@ app.get('/api/projects', async (req, res) => {
         const query = `
             SELECT
                 p.projectid as id,
+                p.partnerid as partnerid,
                 p.projecttitle as title,
                 p.projectlatitude as lat,
                 p.projectlongitude as lng,
@@ -169,6 +170,7 @@ app.get('/api/users/saved-projects', authenticateToken, async (req, res) => {
         const query = `
             SELECT
                 p.projectid as id,
+                p.partnerid as partnerid,
                 p.projecttitle as title,
                 p.projectlatitude as lat,
                 p.projectlongitude as lng,
@@ -207,6 +209,7 @@ app.post('/api/users/saved-projects', authenticateToken, async (req, res) => {
         const query = `
             SELECT
                 p.projectid as id,
+                p.partnerid as partnerid,
                 p.projecttitle as title,
                 p.projectlatitude as lat,
                 p.projectlongitude as lng,

@@ -247,6 +247,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Cancel button in modal
+    const cancelModalBtn = document.getElementById('cancel-modal-btn');
+    if (cancelModalBtn) {
+        cancelModalBtn.addEventListener('click', () => {
+            projectModal.classList.add('hidden');
+        });
+    }
+
     projectModal.addEventListener('click', (e) => {
         if (e.target === projectModal) {
             projectModal.classList.add('hidden');
@@ -528,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const project = allProjects.find(p => p.id == projectId);
             if (project) {
                 document.getElementById('project-id').value = project.id;
-                document.getElementById('project-partnerid').value = project.partnerId;
+                document.getElementById('project-partnerid').value = project.partnerid;
                 document.getElementById('project-title').value = project.title;
                 document.getElementById('project-lat').value = project.lat;
                 document.getElementById('project-lng').value = project.lng;
