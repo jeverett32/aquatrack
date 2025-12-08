@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug</title>
+</head>
+<body>
+    <div id="output"></div>
+    <script>
+        // Open browser console to see logs
+        console.log("Testing event listener for .view-project-link");
+        
+        document.addEventListener('click', async (e) => {
+            console.log("Click detected on:", e.target);
+            console.log("Matches .view-project-link:", e.target.matches('.view-project-link[data-id]'));
+            
+            if (e.target.matches('.view-project-link[data-id]')) {
+                e.preventDefault();
+                console.log("View project link clicked!");
+                const projectId = e.target.dataset.id;
+                console.log("Project ID:", projectId);
+            }
+        });
+        
+        // Create a test link
+        const testLink = document.createElement('a');
+        testLink.href = '#';
+        testLink.className = 'view-project-link';
+        testLink.dataset.id = '123';
+        testLink.textContent = 'Test View Details';
+        document.getElementById('output').appendChild(testLink);
+    </script>
+</body>
+</html>

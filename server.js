@@ -20,7 +20,7 @@ const knex = require('knex')({
         password: process.env.RDS_PASSWORD || "Butterfingers24.",
         database: process.env.RDS_DATABASE || "aquatrack",
         port: process.env.RDS_PORT || 5433,
-        ssl: { rejectUnauthorized: false }
+        ssl: process.env.RDS_HOSTNAME && process.env.RDS_HOSTNAME !== 'localhost' ? { rejectUnauthorized: false } : false
     }
 });
 
@@ -304,6 +304,11 @@ app.post('/api/login', async (req, res) => {
         console.error('Stack:', err.stack);
         res.status(500).json({ message: 'Internal server error.', error: err.message });
     }
+});
+
+// Logout route (client-side token removal, but this confirms logout)
+app.post('/api/logout', authenticateToken, (req, res) => {
+    res.json({ message: 'Logged out successfully!' });
 });
 
 

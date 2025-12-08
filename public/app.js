@@ -352,7 +352,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const marker = L.marker([lat, lng]).addTo(map);
-                marker.bindPopup(`<b>${project.title || 'Untitled'}</b><br>${project.status || 'No Status'}<br><a href="#" class="view-project-link" data-id="${project.id}">View Details</a>`);
+                const popupContent = `<b>${project.title || 'Untitled'}</b><br>${project.status || 'No Status'}<br><a href="#" class="view-project-link" data-id="${project.id}">View Details</a>`;
+                marker.bindPopup(popupContent);
+                
+                // Add click event to popup
+                marker.on('popupopen', () => {
+                    const link = document.querySelector('.leaflet-popup-content .view-project-link');
+                    if (link) {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            showProjectDetail(project.id);
+                        });
+                    }
+                });
+                
                 markers.push(marker);
             });
         } catch (error) {
@@ -363,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function showProjectDetail(projectId) {
         console.log(`Showing details for project ID: ${projectId}`);
-        const project = allProjects.find(p => p.id === projectId);
+        const project = allProjects.find(p => p.id == projectId); // Use == for type coercion
 
         if (project) {
             let savedButtonHtml = '';
@@ -471,9 +484,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- GLOBAL EVENT LISTENERS (for dynamically added content) ---
     document.addEventListener('click', async (e) => {
         // View project button on cards or map popup
-        if (e.target.matches('.view-project-link[data-id]')) {
+        if (e.target.matches('.view-project-link[data-id]') || e.target.closest('.view-project-link[data-id]')) {
             e.preventDefault();
-            const projectId = e.target.dataset.id;
+            const link = e.target.matches('.view-project-link[data-id]') ? e.target : e.target.closest('.view-project-link[data-id]');
+            const projectId = link.dataset.id;
             await showProjectDetail(projectId);
         }
 
