@@ -77,8 +77,8 @@ app.get('/api/projects', async (req, res) => {
                 p.projecttitle as title,
                 p.projectlatitude as lat,
                 p.projectlongitude as lng,
-                pr.partnername as partnerName,
-                pr.partnerwebsiteurl as partnerWebsiteUrl
+                pr.partnername as partnername,
+                pr.partnerwebsiteurl as partnerwebsiteurl
             FROM well_projects p
             LEFT JOIN partners pr ON p.partnerid = pr.partnerid;
         `;
@@ -164,6 +164,7 @@ app.delete('/api/projects/:id', authenticateToken, isManager, async (req, res) =
 // Get all projects saved by the current user
 app.get('/api/users/saved-projects', authenticateToken, async (req, res) => {
     const userId = req.user.id;
+    console.log('Fetching saved projects for user ID:', userId);
     try {
         const query = `
             SELECT
@@ -171,18 +172,20 @@ app.get('/api/users/saved-projects', authenticateToken, async (req, res) => {
                 p.projecttitle as title,
                 p.projectlatitude as lat,
                 p.projectlongitude as lng,
-                pr.partnername as partnerName,
-                pr.partnerwebsiteurl as partnerWebsiteUrl
+                pr.partnername as partnername,
+                pr.partnerwebsiteurl as partnerwebsiteurl
             FROM well_projects p
             JOIN saved_projects sp ON p.projectid = sp.projectid
             LEFT JOIN partners pr ON p.partnerid = pr.partnerid
-            WHERE sp.userid = $1;
+            WHERE sp.userid = ?;
         `;
         const result = await knex.raw(query, [userId]);
+        console.log('Saved projects query result:', result.rows.length, 'projects');
         res.json(result.rows);
     } catch (err) {
-        console.error('Error fetching saved projects:', err);
-        res.status(500).json({ message: 'Internal server error.' });
+        console.error('Error fetching saved projects:', err.message);
+        console.error('Stack trace:', err.stack);
+        res.status(500).json({ message: 'Internal server error.', error: err.message });
     }
 });
 
@@ -190,18 +193,41 @@ app.get('/api/users/saved-projects', authenticateToken, async (req, res) => {
 app.post('/api/users/saved-projects', authenticateToken, async (req, res) => {
     const userId = req.user.id;
     const { projectId } = req.body;
+    console.log('Save project request - userId:', userId, 'projectId:', projectId);
+    
     try {
-        const result = await knex('saved_projects').insert({
+        await knex('saved_projects').insert({
             userid: userId,
             projectid: projectId
-        }).returning('*');
-        res.status(201).json(result[0]);
+        });
+        
+        console.log('Inserted into saved_projects table successfully');
+        
+        // Return the full project details
+        const query = `
+            SELECT
+                p.projectid as id,
+                p.projecttitle as title,
+                p.projectlatitude as lat,
+                p.projectlongitude as lng,
+                pr.partnername as partnername,
+                pr.partnerwebsiteurl as partnerwebsiteurl
+            FROM well_projects p
+            LEFT JOIN partners pr ON p.partnerid = pr.partnerid
+            WHERE p.projectid = ?;
+        `;
+        const result = await knex.raw(query, [projectId]);
+        console.log('Retrieved project details:', result.rows[0]);
+        res.status(201).json(result.rows[0]);
     } catch (err) {
         if (err.code === '23505') { // Unique violation
+            console.log('Project already saved');
             return res.status(409).json({ message: 'Project already saved.' });
         }
-        console.error('Error saving project:', err);
-        res.status(500).json({ message: 'Internal server error.' });
+        console.error('Error saving project:', err.message);
+        console.error('Error code:', err.code);
+        console.error('Stack trace:', err.stack);
+        res.status(500).json({ message: 'Internal server error.', error: err.message });
     }
 });
 

@@ -240,9 +240,12 @@ document.addEventListener('DOMContentLoaded', () => {
         await handleProjectFormSubmit();
     });
 
-    document.querySelector('.close-modal').addEventListener('click', () => {
-        projectModal.classList.add('hidden');
-    });
+    const closeModalBtn = document.querySelector('.close-modal');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', () => {
+            projectModal.classList.add('hidden');
+        });
+    }
 
     projectModal.addEventListener('click', (e) => {
         if (e.target === projectModal) {
@@ -352,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const marker = L.marker([lat, lng]).addTo(map);
-                const popupContent = `<b>${project.title || 'Untitled'}</b><br>${project.status || 'No Status'}<br><a href="#" class="view-project-link" data-id="${project.id}">View Details</a>`;
+                const popupContent = `<b>${project.title || 'Untitled'}</b><br>Partner: ${project.partnername || 'N/A'}<br><a href="#" class="view-project-link" data-id="${project.id}">View Details</a>`;
                 marker.bindPopup(popupContent);
                 
                 // Add click event to popup
@@ -404,15 +407,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const projectDetailContainer = document.getElementById('project-detail');
             projectDetailContainer.innerHTML = `
                 <div class="bg-white p-8 rounded-lg shadow-soft">
-                    <img src="${project.image || 'https://via.placeholder.com/600x400?text=Image+Not+Found'}" alt="${project.title}" class="w-full h-96 object-cover rounded-lg mb-6">
+                    <img src="https://via.placeholder.com/600x400?text=Water+Project" alt="${project.title}" class="w-full h-96 object-cover rounded-lg mb-6">
                     <div class="flex justify-between items-start mb-4">
                             <h2 class="text-4xl font-bold text-teal-800">${project.title || 'Untitled Project'}</h2>
-                            <span class="text-sm font-semibold px-3 py-1 rounded-full ${project.status === 'Complete' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'}">${project.status || 'Unknown'}</span>
+                            <span class="text-sm font-semibold px-3 py-1 rounded-full bg-blue-200 text-blue-800">Active Project</span>
                     </div>
-                    <p class="text-gray-700 text-lg mb-6">${project.description || 'No description available.'}</p>
+                    <p class="text-gray-700 text-lg mb-6"><strong>Partner:</strong> ${project.partnername || 'No partner information'}</p>
+                    <p class="text-gray-700 text-lg mb-6"><strong>Location:</strong> Latitude ${project.lat}, Longitude ${project.lng}</p>
+                    ${project.partnerwebsiteurl ? `<p class="text-gray-700 text-lg mb-6"><strong>Learn More:</strong> <a href="${project.partnerwebsiteurl}" target="_blank" class="text-teal-600 hover:underline">${project.partnerwebsiteurl}</a></p>` : ''}
                     <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
-                        <h3 class="text-2xl font-bold mb-2 text-teal-700">How to Contribute</h3>
-                        <p class="text-gray-700">${project.contribution || 'Information on contributions is not available.'}</p>
+                        <h3 class="text-2xl font-bold mb-2 text-teal-700">About This Project</h3>
+                        <p class="text-gray-700">This well project is working to bring clean water to communities in need. For more information about how to support this initiative, please visit the partner website.</p>
                     </div>
                     <div class="mt-6 flex items-center space-x-4">
                         ${savedButtonHtml}
@@ -464,11 +469,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const card = document.createElement('div');
                     card.className = "bg-white rounded-lg shadow-soft overflow-hidden";
                     card.innerHTML = `
-                        <img src="${project.image || 'https://via.placeholder.com/300x200?text=No+Image'}" alt="${project.title}" class="w-full h-48 object-cover">
+                        <img src="https://via.placeholder.com/300x200?text=Water+Project" alt="${project.title}" class="w-full h-48 object-cover">
                         <div class="p-4">
                             <h3 class="text-xl font-bold text-teal-800">${project.title || 'Untitled'}</h3>
-                            <p class="text-sm text-gray-500 mb-2">${project.status || 'Unknown'}</p>
-                            <p class="text-gray-700 text-sm mb-4">${(project.description || '').substring(0, 100)}...</p>
+                            <p class="text-sm text-gray-500 mb-2">${project.partnername || 'No partner info'}</p>
+                            <p class="text-gray-700 text-sm mb-4">Location: ${project.lat}, ${project.lng}</p>
                             <button class="unsave-project-btn w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition" data-id="${project.id}">Unsave</button>
                         </div>
                     `;
