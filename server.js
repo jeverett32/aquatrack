@@ -41,20 +41,30 @@ const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
-    if (token == null) return res.sendStatus(401); // if no token, unauthorized
+    if (token == null) {
+        console.log('No token provided');
+        return res.sendStatus(401);
+    }
 
     const jwtSecret = process.env.JWT_SECRET || 'default_secret_key';
     jwt.verify(token, jwtSecret, (err, user) => {
-        if (err) return res.sendStatus(403); // if token is no longer valid
+        if (err) {
+            console.log('Token verification failed:', err.message);
+            return res.sendStatus(403);
+        }
         req.user = user;
+        console.log('Authenticated user:', user.email, 'Role:', user.role);
         next();
     });
 };
 
 const isManager = (req, res, next) => {
+    console.log('Checking manager role. User role:', req.user.role);
     if (req.user.role !== 'manager') {
+        console.log('Access denied - not a manager');
         return res.status(403).json({ message: 'Access denied. Manager role required.' });
     }
+    console.log('Manager access granted');
     next();
 };
 
@@ -338,6 +348,224 @@ app.post('/api/login', async (req, res) => {
 // Logout route (client-side token removal, but this confirms logout)
 app.post('/api/logout', authenticateToken, (req, res) => {
     res.json({ message: 'Logged out successfully!' });
+});
+
+// --- Manager-only Routes ---
+
+// Test endpoint to verify manager routes are loaded
+app.get('/api/test-manager-routes', (req, res) => {
+    res.json({ 
+        message: 'Manager routes are loaded!',
+        availableRoutes: [
+            'GET /api/partners',
+            'POST /api/partners',
+            'PUT /api/partners/:id',
+            'DELETE /api/partners/:id',
+            'GET /api/users',
+            'POST /api/users',
+            'PUT /api/users/:id',
+            'DELETE /api/users/:id',
+            'GET /api/admin/projects'
+        ]
+    });
+});
+
+// Get all partners (Managers only)
+app.get('/api/partners', authenticateToken, isManager, async (req, res) => {
+    try {
+        console.log('Fetching all partners from database...');
+        const partners = await knex('partners').select('*');
+        console.log('Partners fetched:', partners.length);
+        res.json(partners);
+    } catch (err) {
+        console.error('Error fetching partners:', err);
+        res.status(500).json({ message: 'Internal server error.', error: err.message });
+    }
+});
+
+// Create a new partner (Managers only)
+app.post('/api/partners', authenticateToken, isManager, async (req, res) => {
+    const { name, website } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ message: 'Partner name is required.' });
+    }
+
+    try {
+        const result = await knex('partners').insert({
+            partnername: name,
+            partnerwebsiteurl: website || null
+        }).returning('*');
+        res.status(201).json(result[0]);
+    } catch (err) {
+        console.error('Error creating partner:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Update a partner (Managers only)
+app.put('/api/partners/:id', authenticateToken, isManager, async (req, res) => {
+    const partnerId = req.params.id;
+    const { name, website } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ message: 'Partner name is required.' });
+    }
+
+    try {
+        const result = await knex('partners').where('partnerid', partnerId).update({
+            partnername: name,
+            partnerwebsiteurl: website || null
+        }).returning('*');
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Partner not found.' });
+        }
+
+        res.json(result[0]);
+    } catch (err) {
+        console.error('Error updating partner:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Delete a partner (Managers only)
+app.delete('/api/partners/:id', authenticateToken, isManager, async (req, res) => {
+    const partnerId = req.params.id;
+
+    try {
+        const numDeleted = await knex('partners').where('partnerid', partnerId).del();
+
+        if (numDeleted === 0) {
+            return res.status(404).json({ message: 'Partner not found.' });
+        }
+
+        res.status(200).json({ message: 'Partner deleted successfully.' });
+    } catch (err) {
+        console.error('Error deleting partner:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Get all users (Managers only)
+app.get('/api/users', authenticateToken, isManager, async (req, res) => {
+    try {
+        console.log('Fetching all users from database...');
+        const users = await knex('users').select('userid', 'useremail', 'userfirstname', 'userlastname', 'userrole');
+        console.log('Users fetched:', users.length);
+        res.json(users);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ message: 'Internal server error.', error: err.message });
+    }
+});
+
+// Create a new user (Managers only)
+app.post('/api/users', authenticateToken, isManager, async (req, res) => {
+    const { email, firstName, lastName, password, role } = req.body;
+
+    if (!email || !firstName || !lastName || !password) {
+        return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    try {
+        const existingUser = await knex('users').where('useremail', email).first();
+        if (existingUser) {
+            return res.status(409).json({ message: 'Email already in use.' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const result = await knex('users').insert({
+            useremail: email,
+            userfirstname: firstName,
+            userlastname: lastName,
+            passwordhash: hashedPassword,
+            userrole: role || 'user'
+        }).returning(['userid', 'useremail', 'userfirstname', 'userlastname', 'userrole']);
+
+        res.status(201).json(result[0]);
+    } catch (err) {
+        console.error('Error creating user:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Update a user (Managers only)
+app.put('/api/users/:id', authenticateToken, isManager, async (req, res) => {
+    const userId = req.params.id;
+    const { email, firstName, lastName, password, role } = req.body;
+
+    if (!email || !firstName || !lastName) {
+        return res.status(400).json({ message: 'Email, first name, and last name are required.' });
+    }
+
+    try {
+        const updateData = {
+            useremail: email,
+            userfirstname: firstName,
+            userlastname: lastName,
+            userrole: role || 'user'
+        };
+
+        if (password && password.trim() !== '') {
+            updateData.passwordhash = await bcrypt.hash(password, saltRounds);
+        }
+
+        const result = await knex('users').where('userid', userId).update(updateData).returning(['userid', 'useremail', 'userfirstname', 'userlastname', 'userrole']);
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        res.json(result[0]);
+    } catch (err) {
+        console.error('Error updating user:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Delete a user (Managers only)
+app.delete('/api/users/:id', authenticateToken, isManager, async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const numDeleted = await knex('users').where('userid', userId).del();
+
+        if (numDeleted === 0) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        res.status(200).json({ message: 'User deleted successfully.' });
+    } catch (err) {
+        console.error('Error deleting user:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
+// Get all well projects (Managers only - includes all details)
+app.get('/api/admin/projects', authenticateToken, isManager, async (req, res) => {
+    try {
+        console.log('Fetching all projects for admin from database...');
+        const query = `
+            SELECT
+                p.projectid as id,
+                p.partnerid as partnerid,
+                p.projecttitle as title,
+                p.projectlatitude as lat,
+                p.projectlongitude as lng,
+                pr.partnername as partnername,
+                pr.partnerwebsiteurl as partnerwebsiteurl
+            FROM well_projects p
+            LEFT JOIN partners pr ON p.partnerid = pr.partnerid
+            ORDER BY p.projectid DESC;
+        `;
+        const result = await knex.raw(query);
+        console.log('Projects fetched:', result.rows.length);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching projects for admin:', err);
+        res.status(500).json({ message: 'Internal server error.', error: err.message });
+    }
 });
 
 

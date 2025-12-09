@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- App State ---
     let map;
+    let modalMap;
+    let modalMarker;
     let currentUser = null;
     let isAdmin = false;
     const ADMIN_EMAIL = "admin@example.com"; // Dummy admin email
@@ -39,18 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectModal = document.getElementById('project-modal');
     const projectForm = document.getElementById('project-form');
     const modalTitle = document.getElementById('modal-title');
+    const partnerModal = document.getElementById('partner-modal');
+    const partnerForm = document.getElementById('partner-form');
+    const userModal = document.getElementById('user-modal');
+    const userForm = document.getElementById('user-form');
 
 
     function showPage(pageId) {
         pages.forEach(page => page.classList.toggle('active', page.id === pageId));
         window.scrollTo(0, 0);
-
-        // Control visibility of the admin "Add Project" button
-        if (pageId === 'dashboard' && isAdmin) {
-            document.getElementById('add-project-btn').classList.remove('hidden');
-        } else {
-            document.getElementById('add-project-btn').classList.add('hidden');
-        }
 
         if (pageId === 'map-page') {
             setTimeout(() => initMap(), 10);
@@ -67,6 +66,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 showPage(pageId);
             }
         });
+    });
+
+    // Manager Dashboard Tabs
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('.manager-tab')) {
+            const tabName = e.target.dataset.tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.manager-tab').forEach(tab => {
+                tab.classList.remove('text-teal-700', 'border-b-2', 'border-teal-700');
+                tab.classList.add('text-gray-600');
+            });
+            e.target.classList.remove('text-gray-600');
+            e.target.classList.add('text-teal-700', 'border-b-2', 'border-teal-700');
+            
+            // Update tab content
+            document.querySelectorAll('.manager-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+        }
+    });
+
+    // Search functionality
+    document.getElementById('partners-search')?.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = allPartnersData.filter(partner => 
+            partner.partnername?.toLowerCase().includes(searchTerm) ||
+            partner.partnerwebsiteurl?.toLowerCase().includes(searchTerm)
+        );
+        renderPartnersTable(filtered);
+    });
+
+    document.getElementById('projects-search')?.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = allProjectsData.filter(project => 
+            project.title?.toLowerCase().includes(searchTerm) ||
+            project.partnername?.toLowerCase().includes(searchTerm)
+        );
+        renderProjectsTable(filtered);
+    });
+
+    document.getElementById('users-search')?.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = allUsersData.filter(user => 
+            user.useremail?.toLowerCase().includes(searchTerm) ||
+            user.userfirstname?.toLowerCase().includes(searchTerm) ||
+            user.userlastname?.toLowerCase().includes(searchTerm)
+        );
+        renderUsersTable(filtered);
     });
 
     // --- CUSTOM MESSAGE BOX ---
@@ -111,11 +160,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkSession() {
         const token = localStorage.getItem('token');
         if (token) {
-            // Here you might want to decode the token to get user info, but for now, we'll just use the presence of a token
-            // For simplicity, we we assume a token means a valid, non-admin user.
-            // A more robust solution would be to verify the token with the server or decode it on the client.
-            const user = parseJwt(token); // Decode token to get user info
-            updateUIForLoggedInUser(user);
+            const user = parseJwt(token);
+            if (user && user.exp && user.exp * 1000 > Date.now()) {
+                updateUIForLoggedInUser(user);
+            } else {
+                localStorage.removeItem('token');
+                updateUIForLoggedOutUser();
+            }
         } else {
             updateUIForLoggedOutUser();
         }
@@ -197,10 +248,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.getElementById('logout-btn').addEventListener('click', () => {
+    document.getElementById('logout-btn').addEventListener('click', (e) => {
+        e.preventDefault();
         localStorage.removeItem('token');
         currentUser = null;
         isAdmin = false;
+        savedProjects = [];
         updateUIForLoggedOutUser();
         showMessage("Logged out successfully.");
         showPage('home');
@@ -228,12 +281,210 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Admin Project Modal ---
-    document.getElementById('add-project-btn').addEventListener('click', () => {
-        projectForm.reset();
-        document.getElementById('project-id').value = '';
-        modalTitle.textContent = 'Add New Project';
+    async function openProjectModal(editMode = false, project = null) {
+        // Load partners for dropdown
+        await loadPartnerDropdown();
+        
+        if (editMode && project) {
+            document.getElementById('project-id').value = project.id;
+            document.getElementById('project-partnerid').value = project.partnerid;
+            document.getElementById('project-title').value = project.title;
+            document.getElementById('project-lat').value = project.lat;
+            document.getElementById('project-lng').value = project.lng;
+            modalTitle.textContent = 'Edit Project';
+            
+            // Initialize map and set marker at project location
+            setTimeout(() => {
+                initModalMap();
+                if (modalMap && project.lat && project.lng) {
+                    const lat = parseFloat(project.lat);
+                    const lng = parseFloat(project.lng);
+                    modalMap.setView([lat, lng], 6);
+                    if (modalMarker) modalMap.removeLayer(modalMarker);
+                    modalMarker = L.marker([lat, lng]).addTo(modalMap);
+                }
+            }, 100);
+        } else {
+            projectForm.reset();
+            document.getElementById('project-id').value = '';
+            modalTitle.textContent = 'Add New Project';
+            document.getElementById('project-lat').value = '';
+            document.getElementById('project-lng').value = '';
+            
+            // Initialize map
+            setTimeout(() => {
+                initModalMap();
+                if (modalMarker) {
+                    modalMap.removeLayer(modalMarker);
+                    modalMarker = null;
+                }
+            }, 100);
+        }
         projectModal.classList.remove('hidden');
+    }
+
+    async function loadPartnerDropdown() {
+        const token = localStorage.getItem('token');
+        if (!token || !isAdmin) return;
+
+        try {
+            const response = await fetch('/api/partners', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            
+            if (response.ok) {
+                const partners = await response.json();
+                const select = document.getElementById('project-partnerid');
+                
+                // Keep the "Select a partner..." option
+                const firstOption = select.querySelector('option[value=""]');
+                select.innerHTML = '';
+                if (firstOption) select.appendChild(firstOption);
+                
+                partners.forEach(partner => {
+                    const option = document.createElement('option');
+                    option.value = partner.partnerid;
+                    option.textContent = partner.partnername;
+                    select.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Error loading partners:', error);
+        }
+    }
+
+    document.getElementById('add-project-btn').addEventListener('click', () => {
+        openProjectModal(false);
     });
+
+
+
+    // --- Partner Modal Handlers ---
+    partnerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await handlePartnerFormSubmit();
+    });
+
+
+
+    async function handlePartnerFormSubmit() {
+        const token = localStorage.getItem('token');
+        if (!token || !isAdmin) {
+            return showMessage("You are not authorized to perform this action.", true);
+        }
+
+        const partnerId = document.getElementById('partner-id').value;
+        const partnerData = {
+            name: document.getElementById('partner-name').value,
+            website: document.getElementById('partner-website').value
+        };
+
+        const method = partnerId ? 'PUT' : 'POST';
+        const endpoint = partnerId ? `/api/partners/${partnerId}` : '/api/partners';
+
+        try {
+            const response = await fetch(endpoint, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(partnerData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showMessage(`Partner successfully ${partnerId ? 'updated' : 'created'}!`);
+                partnerModal.classList.add('hidden');
+                await loadManagerDashboard();
+            } else {
+                throw new Error(result.message || `Failed to ${partnerId ? 'update' : 'create'} partner.`);
+            }
+        } catch (error) {
+            console.error("Partner form error:", error);
+            showMessage(error.message, true);
+        }
+    }
+
+    // --- User Modal Handlers ---
+    userForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await handleUserFormSubmit();
+    });
+
+
+
+    async function handleUserFormSubmit() {
+        const token = localStorage.getItem('token');
+        if (!token || !isAdmin) {
+            return showMessage("You are not authorized to perform this action.", true);
+        }
+
+        const userId = document.getElementById('user-id').value;
+        const userData = {
+            email: document.getElementById('user-email').value,
+            firstName: document.getElementById('user-firstname').value,
+            lastName: document.getElementById('user-lastname').value,
+            password: document.getElementById('user-password').value,
+            role: document.getElementById('user-role').value
+        };
+
+        const method = userId ? 'PUT' : 'POST';
+        const endpoint = userId ? `/api/users/${userId}` : '/api/users';
+
+        try {
+            const response = await fetch(endpoint, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(userData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showMessage(`User successfully ${userId ? 'updated' : 'created'}!`);
+                userModal.classList.add('hidden');
+                await loadManagerDashboard();
+            } else {
+                throw new Error(result.message || `Failed to ${userId ? 'update' : 'create'} user.`);
+            }
+        } catch (error) {
+            console.error("User form error:", error);
+            showMessage(error.message, true);
+        }
+    }
+
+    function initModalMap() {
+        if (modalMap) {
+            modalMap.remove();
+        }
+        
+        modalMap = L.map('modal-map', {
+            minZoom: 2,
+            maxZoom: 18
+        }).setView([20, 0], 2);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(modalMap);
+        
+        modalMap.on('click', (e) => {
+            const { lat, lng } = e.latlng;
+            document.getElementById('project-lat').value = lat.toFixed(6);
+            document.getElementById('project-lng').value = lng.toFixed(6);
+            
+            if (modalMarker) {
+                modalMap.removeLayer(modalMarker);
+            }
+            modalMarker = L.marker([lat, lng]).addTo(modalMap);
+        });
+        
+        setTimeout(() => modalMap.invalidateSize(), 100);
+    }
 
     projectForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -244,6 +495,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', () => {
             projectModal.classList.add('hidden');
+            if (modalMap) {
+                modalMap.remove();
+                modalMap = null;
+            }
         });
     }
 
@@ -252,12 +507,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cancelModalBtn) {
         cancelModalBtn.addEventListener('click', () => {
             projectModal.classList.add('hidden');
+            if (modalMap) {
+                modalMap.remove();
+                modalMap = null;
+            }
         });
     }
 
     projectModal.addEventListener('click', (e) => {
         if (e.target === projectModal) {
             projectModal.classList.add('hidden');
+            if (modalMap) {
+                modalMap.remove();
+                modalMap = null;
+            }
         }
     });
 
@@ -293,7 +556,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 showMessage(`Project successfully ${projectId ? 'updated' : 'created'}!`);
                 projectModal.classList.add('hidden');
+                if (modalMap) {
+                    modalMap.remove();
+                    modalMap = null;
+                }
                 await fetchAndDisplayWells(); // Refresh the map
+                if (isAdmin && document.getElementById('manager-dashboard').classList.contains('hidden') === false) {
+                    await loadManagerDashboard(); // Refresh dashboard if on manager dashboard
+                }
             } else {
                 throw new Error(result.message || `Failed to ${projectId ? 'update' : 'create'} project.`);
             }
@@ -331,6 +601,99 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error("Delete project error:", error);
+            showMessage(error.message, true);
+        }
+    }
+
+    async function deleteProjectFromDashboard(projectId) {
+        if (!confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        if (!token || !isAdmin) {
+            return showMessage("You are not authorized to perform this action.", true);
+        }
+
+        try {
+            const response = await fetch(`/api/projects/${projectId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                showMessage("Project deleted successfully.");
+                await loadManagerDashboard();
+            } else {
+                const result = await response.json();
+                throw new Error(result.message || "Failed to delete project.");
+            }
+        } catch (error) {
+            console.error("Delete project error:", error);
+            showMessage(error.message, true);
+        }
+    }
+
+    async function deletePartner(partnerId) {
+        if (!confirm("Are you sure you want to delete this partner? This action cannot be undone.")) {
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        if (!token || !isAdmin) {
+            return showMessage("You are not authorized to perform this action.", true);
+        }
+
+        try {
+            const response = await fetch(`/api/partners/${partnerId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                showMessage("Partner deleted successfully.");
+                await loadManagerDashboard();
+            } else {
+                const result = await response.json();
+                throw new Error(result.message || "Failed to delete partner.");
+            }
+        } catch (error) {
+            console.error("Delete partner error:", error);
+            showMessage(error.message, true);
+        }
+    }
+
+    async function deleteUser(userId) {
+        if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        if (!token || !isAdmin) {
+            return showMessage("You are not authorized to perform this action.", true);
+        }
+
+        try {
+            const response = await fetch(`/api/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                showMessage("User deleted successfully.");
+                await loadManagerDashboard();
+            } else {
+                const result = await response.json();
+                throw new Error(result.message || "Failed to delete user.");
+            }
+        } catch (error) {
+            console.error("Delete user error:", error);
             showMessage(error.message, true);
         }
     }
@@ -441,7 +804,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadDashboard() {
-        console.log("Loading saved projects for current user.");
         const token = localStorage.getItem('token');
         if (!token) {
             showMessage("Please log in to see your dashboard.", true);
@@ -449,8 +811,22 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        if (isAdmin) {
+            document.getElementById('user-dashboard').classList.add('hidden');
+            document.getElementById('manager-dashboard').classList.remove('hidden');
+            await loadManagerDashboard();
+        } else {
+            document.getElementById('user-dashboard').classList.remove('hidden');
+            document.getElementById('manager-dashboard').classList.add('hidden');
+            await loadUserDashboard();
+        }
+    }
+
+    async function loadUserDashboard() {
+        console.log("Loading saved projects for current user.");
+        const token = localStorage.getItem('token');
         const savedContainer = document.getElementById('saved-projects-container');
-        savedContainer.innerHTML = ''; // Clear previous items
+        savedContainer.innerHTML = '';
 
         try {
             const response = await fetch('/api/users/saved-projects', {
@@ -489,9 +865,163 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } catch (error) {
-            console.error("Full error object from loadDashboard:", error);
+            console.error("Full error object from loadUserDashboard:", error);
             showMessage(error.message, true);
         }
+    }
+
+    let allPartnersData = [];
+    let allProjectsData = [];
+    let allUsersData = [];
+
+    async function loadManagerDashboard() {
+        const token = localStorage.getItem('token');
+        console.log('Loading manager dashboard, token exists:', !!token);
+        
+        try {
+            // Load Partners
+            console.log('Fetching partners...');
+            const partnersResponse = await fetch('/api/partners', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            console.log('Partners response status:', partnersResponse.status);
+            
+            if (partnersResponse.ok) {
+                allPartnersData = await partnersResponse.json();
+                console.log('Partners loaded:', allPartnersData.length);
+                renderPartnersTable(allPartnersData);
+            } else {
+                const error = await partnersResponse.text();
+                console.error('Failed to load partners:', error);
+                showMessage('Failed to load partners: ' + partnersResponse.status, true);
+            }
+
+            // Load Projects
+            console.log('Fetching projects...');
+            const projectsResponse = await fetch('/api/admin/projects', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            console.log('Projects response status:', projectsResponse.status);
+            
+            if (projectsResponse.ok) {
+                allProjectsData = await projectsResponse.json();
+                console.log('Projects loaded:', allProjectsData.length);
+                renderProjectsTable(allProjectsData);
+            } else {
+                const error = await projectsResponse.text();
+                console.error('Failed to load projects:', error);
+                showMessage('Failed to load projects: ' + projectsResponse.status, true);
+            }
+
+            // Load Users
+            console.log('Fetching users...');
+            const usersResponse = await fetch('/api/users', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            console.log('Users response status:', usersResponse.status);
+            
+            if (usersResponse.ok) {
+                allUsersData = await usersResponse.json();
+                console.log('Users loaded:', allUsersData.length);
+                renderUsersTable(allUsersData);
+            } else {
+                const error = await usersResponse.text();
+                console.error('Failed to load users:', error);
+                showMessage('Failed to load users: ' + usersResponse.status, true);
+            }
+        } catch (error) {
+            console.error("Error loading manager dashboard:", error);
+            showMessage("Failed to load dashboard data.", true);
+        }
+    }
+
+    function renderPartnersTable(partners) {
+        const partnersTableBody = document.getElementById('partners-table-body');
+        partnersTableBody.innerHTML = '';
+        
+        if (partners.length === 0) {
+            partnersTableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-gray-500">No partners found</td></tr>';
+            return;
+        }
+        
+        partners.forEach(partner => {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50';
+            row.innerHTML = `
+                <td class="px-4 py-3">${partner.partnerid}</td>
+                <td class="px-4 py-3">${partner.partnername || 'N/A'}</td>
+                <td class="px-4 py-3">${partner.partnerwebsiteurl ? `<a href="${partner.partnerwebsiteurl}" target="_blank" class="text-teal-600 hover:underline">Link</a>` : 'N/A'}</td>
+                <td class="px-4 py-3">
+                    <button class="edit-partner-btn text-blue-600 hover:text-blue-800 mr-2" data-partner='${JSON.stringify(partner)}'>
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="delete-partner-btn text-red-600 hover:text-red-800" data-id="${partner.partnerid}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            `;
+            partnersTableBody.appendChild(row);
+        });
+    }
+
+    function renderProjectsTable(projects) {
+        const projectsTableBody = document.getElementById('projects-table-body');
+        projectsTableBody.innerHTML = '';
+        
+        if (projects.length === 0) {
+            projectsTableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">No projects found</td></tr>';
+            return;
+        }
+        
+        projects.forEach(project => {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50';
+            row.innerHTML = `
+                <td class="px-4 py-3">${project.id}</td>
+                <td class="px-4 py-3">${project.partnername || 'N/A'}</td>
+                <td class="px-4 py-3">${project.title}</td>
+                <td class="px-4 py-3">${project.lat}, ${project.lng}</td>
+                <td class="px-4 py-3">
+                    <button class="edit-project-table-btn text-blue-600 hover:text-blue-800 mr-2" data-project='${JSON.stringify(project)}'>
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="delete-project-table-btn text-red-600 hover:text-red-800" data-id="${project.id}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            `;
+            projectsTableBody.appendChild(row);
+        });
+    }
+
+    function renderUsersTable(users) {
+        const usersTableBody = document.getElementById('users-table-body');
+        usersTableBody.innerHTML = '';
+        
+        if (users.length === 0) {
+            usersTableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">No users found</td></tr>';
+            return;
+        }
+        
+        users.forEach(user => {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50';
+            row.innerHTML = `
+                <td class="px-4 py-3">${user.userid}</td>
+                <td class="px-4 py-3">${user.useremail}</td>
+                <td class="px-4 py-3">${user.userfirstname} ${user.userlastname}</td>
+                <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs ${user.userrole === 'manager' ? 'bg-purple-200 text-purple-800' : 'bg-blue-200 text-blue-800'}">${user.userrole}</span></td>
+                <td class="px-4 py-3">
+                    <button class="edit-user-btn text-blue-600 hover:text-blue-800 mr-2" data-user='${JSON.stringify(user)}'>
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="delete-user-btn text-red-600 hover:text-red-800" data-id="${user.userid}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            `;
+            usersTableBody.appendChild(row);
+        });
     }
 
     // --- GLOBAL EVENT LISTENERS (for dynamically added content) ---
@@ -535,14 +1065,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const projectId = e.target.dataset.id;
             const project = allProjects.find(p => p.id == projectId);
             if (project) {
-                document.getElementById('project-id').value = project.id;
-                document.getElementById('project-partnerid').value = project.partnerid;
-                document.getElementById('project-title').value = project.title;
-                document.getElementById('project-lat').value = project.lat;
-                document.getElementById('project-lng').value = project.lng;
-                modalTitle.textContent = 'Edit Project';
-                projectModal.classList.remove('hidden');
+                openProjectModal(true, project);
             }
+        }
+
+        // Edit project button in manager dashboard table
+        const editProjectTableBtn = e.target.closest('.edit-project-table-btn');
+        if (editProjectTableBtn) {
+            e.preventDefault();
+            const project = JSON.parse(editProjectTableBtn.dataset.project);
+            openProjectModal(true, project);
+        }
+
+        // Delete project button in manager dashboard table
+        const deleteProjectTableBtn = e.target.closest('.delete-project-table-btn');
+        if (deleteProjectTableBtn) {
+            e.preventDefault();
+            await deleteProjectFromDashboard(deleteProjectTableBtn.dataset.id);
         }
 
         // Delete project button on detail page (for admins)
@@ -550,6 +1089,86 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const projectId = e.target.dataset.id;
             await deleteProject(projectId);
+        }
+
+        // Edit partner button
+        const editPartnerBtn = e.target.closest('.edit-partner-btn');
+        if (editPartnerBtn) {
+            e.preventDefault();
+            const partner = JSON.parse(editPartnerBtn.dataset.partner);
+            document.getElementById('partner-id').value = partner.partnerid;
+            document.getElementById('partner-name').value = partner.partnername;
+            document.getElementById('partner-website').value = partner.partnerwebsiteurl || '';
+            document.getElementById('partner-modal-title').textContent = 'Edit Partner';
+            partnerModal.classList.remove('hidden');
+        }
+
+        // Delete partner button
+        const deletePartnerBtn = e.target.closest('.delete-partner-btn');
+        if (deletePartnerBtn) {
+            e.preventDefault();
+            await deletePartner(deletePartnerBtn.dataset.id);
+        }
+
+        // Edit user button
+        const editUserBtn = e.target.closest('.edit-user-btn');
+        if (editUserBtn) {
+            e.preventDefault();
+            const user = JSON.parse(editUserBtn.dataset.user);
+            document.getElementById('user-id').value = user.userid;
+            document.getElementById('user-email').value = user.useremail;
+            document.getElementById('user-firstname').value = user.userfirstname;
+            document.getElementById('user-lastname').value = user.userlastname;
+            document.getElementById('user-role').value = user.userrole;
+            document.getElementById('user-password').value = '';
+            document.getElementById('user-password').required = false;
+            document.getElementById('user-modal-title').textContent = 'Edit User';
+            userModal.classList.remove('hidden');
+        }
+
+        // Delete user button
+        const deleteUserBtn = e.target.closest('.delete-user-btn');
+        if (deleteUserBtn) {
+            e.preventDefault();
+            await deleteUser(deleteUserBtn.dataset.id);
+        }
+
+        // Add partner button (check if clicked element or any parent is the button)
+        const addPartnerBtn = e.target.closest('#add-partner-btn');
+        if (addPartnerBtn) {
+            e.preventDefault();
+            partnerForm.reset();
+            document.getElementById('partner-id').value = '';
+            document.getElementById('partner-modal-title').textContent = 'Add Partner';
+            partnerModal.classList.remove('hidden');
+        }
+
+        // Add user button (check if clicked element or any parent is the button)
+        const addUserBtn = e.target.closest('#add-user-btn');
+        if (addUserBtn) {
+            e.preventDefault();
+            userForm.reset();
+            document.getElementById('user-id').value = '';
+            document.getElementById('user-modal-title').textContent = 'Add User';
+            document.getElementById('user-password').required = true;
+            userModal.classList.remove('hidden');
+        }
+
+        // Add project button on dashboard (check if clicked element or any parent is the button)
+        const addProjectDashboardBtn = e.target.closest('#add-project-btn-dashboard');
+        if (addProjectDashboardBtn) {
+            e.preventDefault();
+            openProjectModal(false);
+        }
+
+        // Cancel partner modal
+        if (e.target.id === 'cancel-partner-btn' || e.target === partnerModal) {
+            partnerModal.classList.add('hidden');
+        }
+
+        // Cancel user modal
+        if (e.target.id === 'cancel-user-btn' || e.target === userModal) {
+            userModal.classList.add('hidden');
         }
     });
 
@@ -613,7 +1232,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Initial Load ---
-    checkSession();
-    showPage('home'); // Show home page initially
+    // Don't automatically check session - user must explicitly log in
+    // Only check if navigating directly to dashboard
+    const currentPage = window.location.hash.replace('#', '') || 'home';
+    if (currentPage === 'dashboard') {
+        checkSession();
+        if (!localStorage.getItem('token')) {
+            showPage('login');
+        } else {
+            showPage('dashboard');
+        }
+    } else {
+        showPage('home'); // Show home page initially
+    }
 
 }); // End DOMContentLoaded
